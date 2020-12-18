@@ -13,10 +13,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Boundsold" type="StaticBody2D" parent="."]
-position = Vector2( 685.529, -62.6366 )
-rotation = 1.5708
-
 [node name="KinematicBody2D" type="KinematicBody2D" parent="."]
 script = ExtResource( 3 )
 
@@ -37,10 +33,6 @@ expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
-current = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
