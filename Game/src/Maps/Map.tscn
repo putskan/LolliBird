@@ -46,6 +46,13 @@ scale = Vector2( 2.22953, 0.0155031 )
 texture = ExtResource( 4 )
 offset = Vector2( -111.953, -200 )
 
+[node name="LowerBounds" type="Sprite" parent="StaticBody2D"]
+position = Vector2( 199.05, 303.197 )
+rotation = -3.14159
+scale = Vector2( 2.23102, 0.0155031 )
+texture = ExtResource( 4 )
+offset = Vector2( -111.953, -200 )
+
 [node name="LeftBounds" type="Sprite" parent="StaticBody2D"]
 position = Vector2( -1.65271, 241.093 )
 rotation = -4.71238
@@ -53,16 +60,9 @@ scale = Vector2( 0.779583, 0.0155031 )
 texture = ExtResource( 4 )
 offset = Vector2( -111.953, -200 )
 
-[node name="LeftBounds2" type="Sprite" parent="StaticBody2D"]
+[node name="RightBounds" type="Sprite" parent="StaticBody2D"]
 position = Vector2( 891.347, 240.874 )
 rotation = -4.71238
 scale = Vector2( 0.777928, 0.0155031 )
-texture = ExtResource( 4 )
-offset = Vector2( -111.953, -200 )
-
-[node name="LowerBounds" type="Sprite" parent="StaticBody2D"]
-position = Vector2( 199.05, 303.197 )
-rotation = -3.14159
-scale = Vector2( 2.23102, 0.0155031 )
 texture = ExtResource( 4 )
 offset = Vector2( -111.953, -200 )
