@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/frame-2.png-bed53fb47e9c10649f04ee947bc990a3.stex"
+path="res://.import/frame-2.png-bb5c9c64a13a6f04dcc36f957d513f2f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/players/Bird D/frame-2.png"
-dest_files=[ "res://.import/frame-2.png-bed53fb47e9c10649f04ee947bc990a3.stex" ]
+source_file="res://assets/players/3/frame-2.png"
+dest_files=[ "res://.import/frame-2.png-bb5c9c64a13a6f04dcc36f957d513f2f.stex" ]
 
 [params]
 

@@ -1,13 +1,14 @@
 extends Node
 
 func handle_scene_change(event):
-	var scene_path
-	if event == 'login_success':
-		print('hola')
-		call_deferred('_deferred_change_scene', 'res://src/UI/GameLobby.tscn')
+	# after clicking "Create Game" in MainMenu
+	if event == 'start_game_creation':
+		call_deferred('_deferred_change_scene', 'res://src/UI/CreateRoom.tscn')
 		
-	elif event == 'game_created':
-		call_deferred('_deferred_change_scene', 'res://src/UI/PlayerLogin.tscn')
+	# after choosing nickname and such
+	elif event == 'login_success':
+		call_deferred('_deferred_change_scene', 'res://src/UI/GameLobby.tscn')
+
 
 
 func _deferred_change_scene(new_scene_path):

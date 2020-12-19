@@ -1,8 +1,94 @@
-[gd_scene format=2]
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/Players/LobbyBird.tscn" type="PackedScene" id=1]
 
 [node name="GameLobby" type="MarginContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = 50.0
+margin_right = -50.0
+margin_bottom = -50.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 924.0
+margin_bottom = 500.0
+custom_constants/separation = 70
+alignment = 1
+
+[node name="Teams" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 60.0
+margin_right = 924.0
+margin_bottom = 270.0
+custom_constants/separation = 10
+
+[node name="Team1Container" type="ColorRect" parent="VBoxContainer/Teams"]
+margin_right = 924.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 700, 100 )
+color = Color( 0.627451, 0, 0.443137, 1 )
+
+[node name="Team1Label" type="Label" parent="VBoxContainer/Teams/Team1Container"]
+margin_left = 5.0
+margin_top = 5.0
+text = "Team 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Team2Container" type="ColorRect" parent="VBoxContainer/Teams"]
+margin_top = 110.0
+margin_right = 924.0
+margin_bottom = 210.0
+rect_min_size = Vector2( 700, 100 )
+color = Color( 0, 0.262745, 0.886275, 1 )
+
+[node name="Team2Label" type="Label" parent="VBoxContainer/Teams/Team2Container"]
+margin_left = 5.0
+margin_top = 5.0
+text = "Team 2
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Unassigned" type="ColorRect" parent="VBoxContainer"]
+margin_top = 340.0
+margin_right = 924.0
+margin_bottom = 440.0
+rect_min_size = Vector2( 700, 100 )
+color = Color( 0.109804, 0.109804, 0.109804, 1 )
+
+[node name="UnassignedLabel" type="Label" parent="VBoxContainer/Unassigned"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 889.0
+margin_bottom = 36.0
+text = "Unassigned
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Unassigned"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = -50.0
+margin_right = -20.0
+custom_constants/separation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyBird" parent="VBoxContainer/Unassigned/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 0.0
+margin_right = 100.0
+
+[node name="LobbyBird2" parent="VBoxContainer/Unassigned/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 110.0
+margin_right = 210.0

@@ -1,6 +1,5 @@
 extends Node
 
-#var network = NetworkedMultiplayerENet.new()
 var network = WebSocketClient.new()
 var ip = "127.0.0.1"
 var port = 1909
@@ -21,7 +20,6 @@ func connect_to_server():
 	var error = network.connect_to_url(server_url, PoolStringArray(), true);
 	get_tree().set_network_peer(network)
 	# set_network_master(1) - not a must.
-
 	network.connect("connection_failed", self, "_on_connection_failed")
 	network.connect("connection_succeeded", self, "_on_connection_succeeded")
 
@@ -34,25 +32,15 @@ func _on_connection_succeeded():
 	print('succesfully connected')
 
 
-func request_game_creation():
-	rpc_id(1, "create_game")
-	pass
-
-
-remote func on_game_creation(game_id):
-	SceneHandler.handle_scene_change('game_created')
-	
-
-
-func request_player_login(player_attributes):
-	# called from PlayerLogin scene
-	# player attributes: json
-	rpc_id(1, 'login_player', player_attributes)
+func request_player_login(mode, nickname, join_room_id):
+	# called from PlayerLogin scene (former ChooseNickname)
+	# params:
+	#	mode: join/create
+	#	nickname: name
+	#	join_room_id: id if trying to join, null otherwise
+	rpc_id(1, 'login_player', mode, nickname, join_room_id)
 
 
 remote func on_login_success():
 	SceneHandler.handle_scene_change('login_success')
-	
-	
-	
 	
