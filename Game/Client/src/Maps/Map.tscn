@@ -1,9 +1,11 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/maps/blue_bg_1.jpg" type="Texture" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
-[ext_resource path="res://src/Maps/KinematicBody2D.gd" type="Script" id=3]
+[ext_resource path="res://src/Maps/KinematicBody2D.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
 [ext_resource path="res://assets/maps/silver.png" type="Texture" id=4]
+
+
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 31.0982, 32.5953 )
@@ -14,11 +16,11 @@ __meta__ = {
 }
 
 [node name="KinematicBody2D" type="KinematicBody2D" parent="."]
-script = ExtResource( 3 )
+script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="KinematicBody2D"]
 position = Vector2( 148.671, 101.424 )
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
 position = Vector2( 148.671, 101.424 )

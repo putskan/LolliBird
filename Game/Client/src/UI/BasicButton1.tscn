@@ -1,0 +1,10 @@
+[gd_scene format=2]
+
+[node name="BasicButton1" type="Button"]
+margin_right = 150.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 150, 20 )
+text = "BasicButton1"
+__meta__ = {
+"_edit_use_anchors_": false
+}

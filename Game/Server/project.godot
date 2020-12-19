@@ -15,14 +15,13 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Agile"
-run/main_scene="res://src/Game.tscn"
+config/name="Agile - Server"
+run/main_scene="res://src/StartingScene.tscn"
 config/icon="res://icon.png"
 
-[display]
+[autoload]
 
-window/stretch/mode="2d"
-window/stretch/aspect="keep"
+Server="*res://Server.gd"
 
 [rendering]
 
