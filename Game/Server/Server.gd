@@ -1,6 +1,7 @@
 extends Node
 
-var network = NetworkedMultiplayerENet.new()
+# var network = NetworkedMultiplayerENet.new()
+var network = WebSocketServer.new();
 var port = 1909
 var max_players = 300
 var running_game_ids = []
@@ -9,9 +10,17 @@ var running_game_ids = []
 func _ready():
 	print("I'm The Real Server!")
 	start_server()
-	
+
+func _process(delta):
+	if network.is_listening():
+		# checking for incoming connections
+		network.poll()
+
+
+
 func start_server():
-	network.create_server(port, max_players)
+	network.listen(port, PoolStringArray(), true);
+	# network.create_server(port, max_players)
 	get_tree().set_network_peer(network)
 	
 	network.connect("peer_connected", self, "_peer_connected")

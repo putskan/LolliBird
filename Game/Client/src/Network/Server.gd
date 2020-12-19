@@ -1,19 +1,27 @@
 extends Node
 
-var network = NetworkedMultiplayerENet.new()
+#var network = NetworkedMultiplayerENet.new()
+var network = WebSocketClient.new()
 var ip = "127.0.0.1"
 var port = 1909
+var server_url = 'ws://%s:%d' % [ip, port]
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	connect_to_server()
 
 
+func _process(delta):
+	if network.get_connection_status() in [NetworkedMultiplayerPeer.CONNECTION_CONNECTED, NetworkedMultiplayerPeer.CONNECTION_CONNECTING]:
+		network.poll();
+
+
 func connect_to_server():
-	network.create_client(ip, port)
+	# non websocket implementation, using ENet: network.create_client(ip, port)
+	var error = network.connect_to_url(server_url, PoolStringArray(), true);
 	get_tree().set_network_peer(network)
-	# set_network_master(1)
-	
+	# set_network_master(1) - not a must.
+
 	network.connect("connection_failed", self, "_on_connection_failed")
 	network.connect("connection_succeeded", self, "_on_connection_succeeded")
 
