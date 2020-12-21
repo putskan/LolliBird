@@ -51,3 +51,4 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Join Game"
 [connection signal="pressed" from="VBoxContainer/CreateGame" to="." method="_on_CreateGame_pressed"]
+[connection signal="pressed" from="VBoxContainer/JoinGame" to="." method="_on_JoinGame_pressed"]
