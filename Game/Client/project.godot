@@ -21,8 +21,9 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Server="*res://src/Network/Server.gd"
+Server="*res://src/Singletons/Server.gd"
 SceneHandler="*res://src/Singletons/SceneHandler.gd"
+Globals="*res://src/Singletons/Globals.gd"
 
 [display]
 

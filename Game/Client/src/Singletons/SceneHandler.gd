@@ -10,7 +10,6 @@ func handle_scene_change(event):
 		call_deferred('_deferred_change_scene', 'res://src/UI/GameLobby.tscn')
 
 
-
 func _deferred_change_scene(new_scene_path):
 	var root = get_tree().get_root()
 	var current_scene = root.get_child(root.get_child_count() - 1)

@@ -26,8 +26,8 @@ __meta__ = {
 }
 
 [node name="Control" type="Control" parent="VBoxContainer/CenterContainer"]
-margin_left = 27.0
-margin_right = 71.0
+margin_left = 28.0
+margin_right = 72.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 44, 30 )
 
@@ -38,7 +38,7 @@ scale = Vector2( 1.8, 1.8 )
 margin_top = 34.0
 margin_right = 100.0
 margin_bottom = 48.0
-text = "NewPlayaaaaaa"
+text = "PlayerName"
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false

@@ -41,6 +41,8 @@ func request_player_login(mode, nickname, join_room_id):
 	rpc_id(1, 'login_player', mode, nickname, join_room_id)
 
 
-remote func on_login_success():
+remote func on_login_success(player_name, room_id):
+	Globals.player_name = player_name
+	Globals.room_id = room_id
+	Globals.player_team = 'Unassigned'
 	SceneHandler.handle_scene_change('login_success')
-	

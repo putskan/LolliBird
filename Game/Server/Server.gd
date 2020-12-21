@@ -31,11 +31,12 @@ func start_server():
 func _peer_connected(player_id):
 	# player_id is actually peer_id
 	print("User %s Connected!" % player_id)
-	
+
+
 func _peer_disconnected(player_id):
 	print("User %s Disconnected!" % player_id)
-	
-		
+
+
 func generate_room_id():
 	# generate unused 4 digit number
 	while true:
@@ -44,13 +45,7 @@ func generate_room_id():
 			running_rooms_ids.append(room_id)
 			return room_id
 
-"""
-{
-	mode: create/join
-	nickname: name
-	room_id: null/join_pin
-}
-"""
+
 remote func login_player(mode, nickname, join_room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	var room
@@ -72,11 +67,11 @@ remote func login_player(mode, nickname, join_room_id):
 	var player = load('res://src/Player.tscn').instance()
 	player.player_id = player_id
 	player.name = 'player_%d' % player_id
-	player.player_name = 'nickname'
+	player.player_name = nickname
 	# add to tree
 	room.add_child(player)
 	# add to team "unassigned" (0)
 	room.teams[0].append(player_id)
-	rpc_id(player_id, 'on_login_success')
+	rpc_id(player_id, 'on_login_success', player.player_name, room.room_id)
 
 
