@@ -103,7 +103,6 @@ remote func client_lobby_entry_sync(player_name, room_id):
 	#var player_names = HelperFunctions.nodes_to_names(HelperFunctions.flatten_dict_of_lists(teams_to_players))
 	
 	# multicast the new added player to the rest of the room clients
-	print('player_name %s' % player_name)
 	for pid in room_node.room_player_ids:
 		if pid != player_id:
 			rpc_id(pid, 'sync_lobby_players', {'Unassigned': [player_name]})

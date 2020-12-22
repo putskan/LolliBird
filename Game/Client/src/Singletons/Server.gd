@@ -113,7 +113,6 @@ func request_lobby_entry_sync():
 remote func sync_lobby_players(teams_to_players_dict):
 	# relevant for GameLobby scene
 	# receive a dict of the players to add to the lobby (for sync purposes)
-	
 	teams_to_players_dict = teams_to_players_dict
 	get_tree().get_current_scene().add_birds_to_teams(teams_to_players_dict)
 		
