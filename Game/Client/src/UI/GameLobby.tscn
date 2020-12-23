@@ -20,10 +20,21 @@ margin_bottom = 500.0
 custom_constants/separation = 70
 alignment = 1
 
+[node name="RoomID" type="RichTextLabel" parent="VBoxContainer"]
+margin_right = 150.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 150, 50 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "PIN: "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Teams" type="VBoxContainer" parent="VBoxContainer"]
-margin_top = 60.0
+margin_top = 120.0
 margin_right = 924.0
-margin_bottom = 270.0
+margin_bottom = 330.0
 custom_constants/separation = 10
 
 [node name="Team1" type="ColorRect" parent="VBoxContainer/Teams"]
@@ -77,9 +88,9 @@ __meta__ = {
 }
 
 [node name="Unassigned" type="ColorRect" parent="VBoxContainer"]
-margin_top = 340.0
+margin_top = 400.0
 margin_right = 924.0
-margin_bottom = 440.0
+margin_bottom = 500.0
 rect_min_size = Vector2( 700, 100 )
 color = Color( 0.109804, 0.109804, 0.109804, 1 )
 

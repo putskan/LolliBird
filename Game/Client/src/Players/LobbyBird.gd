@@ -37,6 +37,8 @@ func drag_lobby_bird(event):
 			# create a bird and remove this one (other method causes bugs)
 			current_scene.add_birds_to_teams({team_name_to_move_to: [bird_name]})
 			current_scene.all_lobby_birds.erase(self)
+			if bird_name == Globals.player_name:
+				Globals.player_team = team_name_to_move_to
 			queue_free()
 
 	if drag_position and event is InputEventMouseMotion:

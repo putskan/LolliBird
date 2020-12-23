@@ -82,7 +82,7 @@ remote func is_room_id_exists(room_id):
 remote func create_room():
 	var player_id = get_tree().get_rpc_sender_id()
 	var room = HelperFunctions.create_room(player_id)
-	rpc_id(player_id, 'response_room_creation', room.name)
+	rpc_id(player_id, 'response_room_creation', int(room.name))
 
 
 remote func create_player(player_name, room_id):
