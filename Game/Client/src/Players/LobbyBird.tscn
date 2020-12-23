@@ -4,7 +4,6 @@
 [ext_resource path="res://src/Players/LobbyBird.gd" type="Script" id=2]
 
 [node name="LobbyBird" type="Control"]
-margin_left = 1.0
 margin_right = 101.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 100, 50 )
@@ -21,7 +20,7 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
-margin_right = 100.0
+margin_right = 101.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 100, 30 )
 __meta__ = {
@@ -36,10 +35,11 @@ rect_min_size = Vector2( 44, 30 )
 
 [node name="LobbyBirdKinematic" parent="VBoxContainer/CenterContainer/Control" instance=ExtResource( 1 )]
 scale = Vector2( 1.8, 1.8 )
+z_index = 1
 
 [node name="PlayerName" type="Label" parent="VBoxContainer"]
 margin_top = 34.0
-margin_right = 100.0
+margin_right = 101.0
 margin_bottom = 48.0
 text = "PlayerName"
 align = 1

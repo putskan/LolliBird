@@ -115,4 +115,14 @@ remote func sync_lobby_players(teams_to_players_dict):
 	# receive a dict of the players to add to the lobby (for sync purposes)
 	teams_to_players_dict = teams_to_players_dict
 	get_tree().get_current_scene().add_birds_to_teams(teams_to_players_dict)
-		
+
+
+func multicast_lobby_bird_move(bird_name, new_team):
+	rpc_id(1, 'multicast_lobby_bird_move', bird_name, new_team, Globals.room_id)
+
+
+remote func move_lobby_bird(bird_name, new_team):
+	# current scene should be GameLobby
+	get_tree().get_current_scene().move_lobby_bird(bird_name, new_team)
+	
+

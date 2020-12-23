@@ -1,22 +1,20 @@
 extends Control
 
-
+var current_scene
 var drag_position = null
 var teams_parent
 var teams_rect_nodes
-var latest_pos
-
+onready var bird_name = get_node("VBoxContainer/PlayerName").text
 
 func _ready():
 	yield(get_tree(),"idle_frame")
-	var current_scene = get_tree().get_current_scene()
-	print(current_scene.name)
+	current_scene = get_tree().get_current_scene()
+	current_scene.all_lobby_birds.append(self)
 	teams_parent = get_tree().get_current_scene().get_node('VBoxContainer/Teams')
 	teams_rect_nodes = [current_scene.get_node('VBoxContainer/Teams/Team1'),
 						current_scene.get_node('VBoxContainer/Teams/Team2'), 
 						current_scene.get_node('VBoxContainer/Unassigned')]
-	latest_pos = rect_global_position
-
+						
 
 
 func drag_lobby_bird(event):
@@ -26,26 +24,22 @@ func drag_lobby_bird(event):
 			# (so the top left corner of the object won't move to the mouse pos)
 			drag_position = get_global_mouse_position() - rect_global_position
 		else:
-			# end dragging & move to relevant team
+			# end dragging & move to relevant container
+			var team_name_to_move_to = get_parent().get_parent().name
 			for team_node in teams_rect_nodes:
 				# check if a valid place to move to
-				if self.get_parent().get_parent() != team_node and is_control_inside_control(self.get_node("VBoxContainer/CenterContainer/Control"), team_node):
-					get_parent().remove_child(self)
-					team_node.get_node('BirdsContainer').add_child(self)
-					print(self.get_parent().name)
-					print(self.get_parent().get_parent().name)
-					latest_pos = rect_global_position
-					drag_position = null
-					return
+				if team_node.name != team_name_to_move_to and is_control_inside_control(self.get_node("VBoxContainer/CenterContainer/Control"), team_node):
+					team_name_to_move_to = team_node.name
+					# notify the server of a bird move
+					Server.multicast_lobby_bird_move(bird_name, team_name_to_move_to)
+					break
+			
+			# create a bird and remove this one (other method causes bugs)
+			current_scene.add_birds_to_teams({team_name_to_move_to: [bird_name]})
+			current_scene.all_lobby_birds.erase(self)
+			queue_free()
 
-			# if not a valid spot to move to, restore to previous position
-			print('b4: %s' % rect_global_position)
-			rect_global_position = latest_pos
-			print('after: %s' % rect_global_position)
-			print('restoring')
-			drag_position = null
-
-	if event is InputEventMouseMotion and drag_position:
+	if drag_position and event is InputEventMouseMotion:
 		rect_global_position = get_global_mouse_position() - drag_position
 
 

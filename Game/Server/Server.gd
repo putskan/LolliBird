@@ -1,15 +1,15 @@
 extends Node
 
-# var network = NetworkedMultiplayerENet.new()
 var network = WebSocketServer.new();
 var port = 1909
 var max_players = 300
 onready var root_node = get_tree().get_root()
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	print("I'm The Real Server!")
 	start_server()
+
 
 func _process(delta):
 	if network.is_listening():
@@ -19,13 +19,12 @@ func _process(delta):
 
 func start_server():
 	network.listen(port, PoolStringArray(), true);
-	# network.create_server(port, max_players)
 	get_tree().set_network_peer(network)
 	
 	network.connect("peer_connected", self, "_peer_connected")
 	network.connect("peer_disconnected", self, "_peer_disconnected")
-	
-	
+
+
 func _peer_connected(player_id):
 	# player_id is actually peer_id
 	print("User %s Connected!" % player_id)
@@ -90,22 +89,23 @@ remote func create_player(player_name, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	var error_message = HelperFunctions.create_player(get_tree().get_rpc_sender_id(), player_name, room_id)
 	rpc_id(player_id, 'response_player_creation', error_message)
-		
+
 
 remote func client_lobby_entry_sync(player_name, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	# send client the other player's data
-	var room_node = HelperFunctions.get_room_node(room_id)
-	
-	rpc_id(player_id, 'sync_lobby_players', room_node.room_teams_to_players_names)
-	
-	# var teams_to_players_names = HelperFunctions.get_room_teams_and_players_names(room_id)
-	#var player_names = HelperFunctions.nodes_to_names(HelperFunctions.flatten_dict_of_lists(teams_to_players))
+	rpc_id(player_id, 'sync_lobby_players', HelperFunctions.get_team_names_to_player_names(room_id))
 	
 	# multicast the new added player to the rest of the room clients
-	for pid in room_node.room_player_ids:
+	for pid in HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id()):
 		if pid != player_id:
 			rpc_id(pid, 'sync_lobby_players', {'Unassigned': [player_name]})
 
 
-
+remote func multicast_lobby_bird_move(bird_name, new_team, room_id):
+	# update locally
+	HelperFunctions.update_player_team(bird_name, new_team, room_id)
+	# notify all other room players
+	var pids = HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id())
+	for pid in pids:
+		rpc_id(pid, 'move_lobby_bird', bird_name, new_team)

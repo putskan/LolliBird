@@ -22,7 +22,6 @@ height = 7.0
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.0296434, 0.0282415 )
 frames = SubResource( 1 )
-frame = 3
 playing = true
 centered = false
 
