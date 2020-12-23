@@ -14,7 +14,6 @@ func _ready():
 	teams_rect_nodes = [current_scene.get_node('VBoxContainer/Teams/Team1'),
 						current_scene.get_node('VBoxContainer/Teams/Team2'), 
 						current_scene.get_node('VBoxContainer/Unassigned')]
-						
 
 
 func drag_lobby_bird(event):

@@ -12,11 +12,12 @@ func _physics_process(delta):
 		
 	else:
 		motion.y = motion.y / 1.1	
-		
-	if Input.is_action_pressed("ui_right") and not $AnimatedSprite.flip_h:
+	
+	# should be get_scale.x -> there seems to be a bug in Godot.
+	if Input.is_action_pressed("ui_right") and get_scale().y > 0:
 		motion.x += 5
 
-	elif Input.is_action_pressed("ui_left") and $AnimatedSprite.flip_h:
+	elif Input.is_action_pressed("ui_left") and get_scale().y < 0:
 			motion.x -= 5
 
 	else:

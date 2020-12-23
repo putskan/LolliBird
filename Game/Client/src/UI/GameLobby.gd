@@ -6,7 +6,7 @@ onready var all_lobby_birds = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Server.request_lobby_entry_sync()
-	get_node("VBoxContainer/RoomID").text += str(Globals.room_id)
+	get_node("VBoxContainer/HBoxContainer/RoomID").text += str(Globals.room_id)
 
 
 func add_birds_to_teams(teams_to_players_dict):
@@ -34,4 +34,10 @@ func move_lobby_bird(bird_name, new_team):
 			break
 
 	add_birds_to_teams({new_team: [bird_name]})
+
+
+
+func _on_StartGame_pressed():
+	Server.request_start_game()
+	SceneHandler.handle_scene_change('StartGame')
 

@@ -2,8 +2,9 @@ extends Node
 
 var network = WebSocketClient.new()
 var ip = "127.0.0.1"
-var port = 1909
+var port = 11111
 var server_url = 'ws://%s:%d' % [ip, port]
+signal response_received_team_names_to_players_names(result)
 
 
 func _ready():
@@ -74,7 +75,7 @@ func request_room_id_join_validation(room_id):
 	# called from JoinRoom
 	print('Client: sending roomid for check: %d' % room_id)
 	rpc_id(1, 'is_room_id_exists', room_id)
-	
+
 
 remote func response_room_id_join_validation(is_room_id_valid):
 	# response from the server 
@@ -113,7 +114,6 @@ func request_lobby_entry_sync():
 remote func sync_lobby_players(teams_to_players_dict):
 	# relevant for GameLobby scene
 	# receive a dict of the players to add to the lobby (for sync purposes)
-	teams_to_players_dict = teams_to_players_dict
 	get_tree().get_current_scene().add_birds_to_teams(teams_to_players_dict)
 
 
@@ -124,5 +124,22 @@ func multicast_lobby_bird_move(bird_name, new_team):
 remote func move_lobby_bird(bird_name, new_team):
 	# current scene should be GameLobby
 	get_tree().get_current_scene().move_lobby_bird(bird_name, new_team)
-	
 
+
+func request_team_names_to_players_names():
+	rpc_id(1, 'get_team_names_to_player_names', Globals.room_id)
+
+
+remote func response_team_names_to_players_names(result):
+	emit_signal('response_received_team_names_to_players_names', result)
+
+
+func request_start_game():
+	print('requsting start game')
+	rpc_id(1, 'start_game', Globals.room_id)
+
+
+remote func start_game():
+	print('got command')
+	SceneHandler.handle_scene_change('StartGame')
+	

@@ -1,7 +1,7 @@
 extends Node
 
 var network = WebSocketServer.new();
-var port = 1909
+var port = 11111
 var max_players = 300
 onready var root_node = get_tree().get_root()
 
@@ -15,7 +15,6 @@ func _process(delta):
 	if network.is_listening():
 		# checking for incoming connections
 		network.poll()
-
 
 func start_server():
 	network.listen(port, PoolStringArray(), true);
@@ -95,7 +94,6 @@ remote func client_lobby_entry_sync(player_name, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	# send client the other player's data
 	rpc_id(player_id, 'sync_lobby_players', HelperFunctions.get_team_names_to_player_names(room_id))
-	
 	# multicast the new added player to the rest of the room clients
 	for pid in HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id()):
 		if pid != player_id:
@@ -109,3 +107,17 @@ remote func multicast_lobby_bird_move(bird_name, new_team, room_id):
 	var pids = HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id())
 	for pid in pids:
 		rpc_id(pid, 'move_lobby_bird', bird_name, new_team)
+
+
+remote func get_team_names_to_player_names(room_id):
+	rpc_id(get_tree().get_rpc_sender_id(), 'response_team_names_to_players_names', HelperFunctions.get_team_names_to_player_names(room_id))
+
+
+remote func start_game(room_id):
+	print('request_start_game')
+	# notify all other room players
+	var pids = HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id())
+	for pid in pids:
+		print('commanding!')
+		print(pid)
+		rpc_id(pid, 'start_game')
