@@ -25,3 +25,4 @@ func _physics_process(delta):
 		motion.x = motion.x / 1.1
 
 	motion = move_and_slide(motion)
+
