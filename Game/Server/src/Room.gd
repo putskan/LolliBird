@@ -30,18 +30,14 @@ teams_players = {
 
 var teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
 var player_ids = []
-# add to client side as well
-# get_team_names_to_player_names - convert to something else
-# bird lobby sync - change to signals
-# remove player on client side from all scenes on disconnect, using signal (e.g., from lobby)
-# dict erase - make sure not running through the dict when trying to remove
+
 
 func _ready():
 	# change to true when game starts
 	set_physics_process(false)
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	# 20 fps
 	# remove player timestamp, change pids to players names, add server timestamp
 	# changing pids to player_names because client knows only names.

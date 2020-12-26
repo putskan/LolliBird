@@ -1,9 +1,9 @@
 extends Node
 
+const IP_ADDRESS = "127.0.0.1"
+const PORT = 11111
 var network = WebSocketClient.new()
-var ip = "127.0.0.1"
-var port = 11111
-var server_url = 'ws://%s:%d' % [ip, port]
+var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
 # signal response_received_team_names_to_players_names(result)
 # signal peer_list_updated
 signal init_teams_players
