@@ -31,47 +31,33 @@ func _peer_connected(player_id):
 
 func _peer_disconnected(player_id):
 	print("User %s Disconnected!" % player_id)
+	var player_node = Globals.running_rooms_node.find_node(str(player_id), true, false)
+	if not player_node:
+		# if not found (i.e., not inside a room)
+		return
+		
+	# clean room resources		
+	var room_node = player_node.get_parent().get_parent().get_parent()
+	room_node.room_player_basic_info.erase(player_id)
+	room_node.player_state_collection.erase(player_id)
+	# remove player from sceneTree
+	player_node.queue_free()
+	# notify other clients in room
+	for pid in HelperFunctions.get_room_player_ids(int(room_node.name), get_tree().get_rpc_sender_id()):
+		rpc_id(pid, 'update_room_players_dict', {player_id: null}, true)
 
-"""
-remote func login_player(mode, nickname, join_room_id):
-	var player_id = get_tree().get_rpc_sender_id()
-	var room
-	# find / create room:
-	if mode == 'create':
-		# init room
-		room = HelperFunctions.create_room(player_id)
 
-	else:
-		# if join room
-		room = Globals.running_rooms_node.get_node(str(join_room_id))
+	if room_node.host_id == player_id:
+		if not room_node.room_player_basic_info.empty():
+			# if there are players left, assign new host
+			room_node.host_id = room_node.room_player_basic_info.keys()[0]
+			rpc_id(room_node.host_id, 'assign_as_room_host')
 
-	# create Player object
-	var player = HelperFunctions.create_player(player_id, nickname)
+		else:
+			# close room
+			Globals.running_rooms_ids.erase(room_node.name)
+			room_node.queue_free()
 
-	# add player to tree
-	room.get_node('Teams/Unassigned').add_child(player, true)
-	# add to team "unassigned" (0)
-	room.teams[0].append(player_id)
-	print('Entering RPC call on_login_success')
-	rpc_id(player_id, 'on_login_success', player.player_name, room.room_id, room.host_id == player_id)
-	# broadcast the player has connected
-	rpc_id(0, 'on_other_player_join', player.player_name)
-	var room_players = HelperFunctions.get_all_players_in_room(room)
-	
-	# load previously connected players to the new client
-	for p in room_players:
-		rpc_id(player_id, 'on_other_player_join', p.player_name)
-		print(p.player_name)
-	
-	get_tree().get_root().print_tree_pretty()
-"""
-"""
-remote func fetch_room_teams_players(room_id):
-	# get the players in the room of the requesting client
-	print('roomid %d' % room_id)
-	var room_node = HelperFunctions.get_room_node(room_id)
-	return HelperFunctions.get_room_teams_and_players(room_node)
-"""
 
 remote func is_room_id_exists(room_id):
 	# check if there's an open room with "room_id" and send back the info to the client
@@ -88,6 +74,12 @@ remote func create_player(player_name, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	var error_message = HelperFunctions.create_player(get_tree().get_rpc_sender_id(), player_name, room_id)
 	rpc_id(player_id, 'response_player_creation', error_message)
+	# update 
+	if not error_message:
+		# update player list on room clients
+		rpc_id(player_id, 'update_room_players_dict', HelperFunctions.get_room_node(room_id).room_player_basic_info)
+		for pid in HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id()):
+			rpc_id(pid, 'update_room_players_dict', {player_id: {'player_name': player_name, 'team_name': 'Unassigned'}})
 
 
 remote func client_lobby_entry_sync(player_name, room_id):
@@ -96,8 +88,7 @@ remote func client_lobby_entry_sync(player_name, room_id):
 	rpc_id(player_id, 'sync_lobby_players', HelperFunctions.get_team_names_to_player_names(room_id))
 	# multicast the new added player to the rest of the room clients
 	for pid in HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id()):
-		if pid != player_id:
-			rpc_id(pid, 'sync_lobby_players', {'Unassigned': [player_name]})
+		rpc_id(pid, 'sync_lobby_players', {'Unassigned': [player_name]})
 
 
 remote func multicast_lobby_bird_move(bird_name, new_team, room_id):
@@ -114,10 +105,21 @@ remote func get_team_names_to_player_names(room_id):
 
 
 remote func start_game(room_id):
-	print('request_start_game')
-	# notify all other room players
+	# notify all other room players & start running
 	var pids = HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id())
 	for pid in pids:
-		print('commanding!')
-		print(pid)
 		rpc_id(pid, 'start_game')
+	HelperFunctions.get_room_node(room_id).set_physics_process(true)
+
+
+remote func receive_player_state(player_state, room_id):
+	var room_node = HelperFunctions.get_room_node(room_id)
+	room_node.update_player_state(get_tree().get_rpc_sender_id(), player_state)
+
+
+func multicast_players_states(room_id, players_states):
+	# called from room
+	var pids = HelperFunctions.get_room_player_ids(room_id, get_tree().get_rpc_sender_id())
+	for pid in pids:
+		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
+

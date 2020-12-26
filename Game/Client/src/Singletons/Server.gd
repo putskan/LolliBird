@@ -5,6 +5,7 @@ var ip = "127.0.0.1"
 var port = 11111
 var server_url = 'ws://%s:%d' % [ip, port]
 signal response_received_team_names_to_players_names(result)
+signal peer_list_updated
 
 
 func _ready():
@@ -32,43 +33,6 @@ func _on_connection_failed():
 func _on_connection_succeeded():
 	print('succesfully connected')
 
-"""
-func request_player_login(mode, nickname, join_room_id):
-	# called from PlayerLogin scene (former ChooseNickname)
-	# params:
-	#	mode: join/create
-	#	nickname: name
-	#	join_room_id: id if trying to join, null otherwise
-	rpc_id(1, 'login_player', mode, nickname, join_room_id)
-"""
-"""
-remote func on_login_success(player_name, room_id, is_player_host):
-	Globals.player_name = player_name
-	Globals.room_id = room_id
-	print('Room ID is %d' % room_id)
-	Globals.player_team = 'Unassigned'
-	Globals.is_host = is_player_host
-	SceneHandler.handle_scene_change('login_success')
-"""
-"""
-remote func on_other_player_join(s_other_player_name):
-	# add bird to GameLobby if other player has joined the lobby
-	var current_scene = get_tree().get_current_scene()
-	print(current_scene.name)
-	if current_scene.name  == 'GameLobby' and s_other_player_name != Globals.player_name:
-		current_scene.add_bird_to_team(s_other_player_name, Globals.UNASSIGNED_TEAM_NOTATION)
-"""
-"""
-func request_room_teams_players():
-	# fetch all player names in the room by their teams. 
-	# e.g., {'Team1': ['Dave', ...], 'Team2': ['Rachel', ...], 'Unassigned': ['Daniel', ...]}
-	rpc_id(1, 'fetch_room_teams_players', Globals.room_id)
-"""
-"""
-remote func response_room_teams_players():
-	# the response from request_room_teams_players
-	pass
-"""
 
 func request_room_id_join_validation(room_id):
 	# send room id to server for validation that the room exists
@@ -90,7 +54,7 @@ func request_room_creation():
 
 remote func response_room_creation(room_id):
 	Globals.room_id = room_id
-	Globals.is_host = true
+	assign_as_room_host()
 
 
 func request_player_creation(player_name, room_id):
@@ -135,11 +99,38 @@ remote func response_team_names_to_players_names(result):
 
 
 func request_start_game():
-	print('requsting start game')
 	rpc_id(1, 'start_game', Globals.room_id)
 
 
 remote func start_game():
-	print('got command')
 	SceneHandler.handle_scene_change('StartGame')
+
+
+remote func assign_as_room_host():
+	Globals.is_host = true
+
+
+func send_player_state(player_state):
+	# call from player
+	rpc_unreliable_id(1, 'receive_player_state', player_state, Globals.room_id)
+
+
+remote func receive_all_players_states(s_players_states):
+	# send to function on map node
+	get_tree().get_current_scene().update_all_players_states(s_players_states)
+
+
+remote func update_room_players_dict(players_details, remove=false):
+	# players_details - {player_id: {'player_name': name, 'team_name': team}, ...}
+	if remove:
+		for k in players_details:
+			Globals.room_players_dict.erase(k)
 	
+	else:
+		for k in players_details:
+			Globals.room_players_dict[k] = players_details[k]
+	emit_signal('peer_list_updated')
+
+
+
+

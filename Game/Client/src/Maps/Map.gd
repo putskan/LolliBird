@@ -27,6 +27,7 @@ func init_bird(team_name, player_name):
 	var bird_node
 	if player_name == Globals.player_name:
 		bird_node = player_bird_res.instance()
+		# make bird distinguishable
 		bird_node.set_modulate(Color(248, 0, 0))
 	else: 
 		# not the player itself.
@@ -47,3 +48,7 @@ func init_bird(team_name, player_name):
 		bird_node.set_scale(Vector2(bird_node.scale.x * -1, bird_node.scale.y))
 
 
+func update_all_players_states(s_players_states):
+	# :dict players_states: {'T': timestamp, playername1: {'P': position}, playername2: {...} ...}
+	print(s_players_states)
+	

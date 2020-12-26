@@ -29,7 +29,6 @@ func create_room(host_id):
 	room.add_child(teams_node, true)
 	# set room attributes
 	var room_id = HelperFunctions._generate_room_id()
-	room.room_id = room_id
 	room.name = str(room_id)
 	room.host_id = host_id
 		
@@ -39,9 +38,8 @@ func create_room(host_id):
 
 
 func create_player(player_id, player_name, room_id):
-	# create a player and return erro message is present
+	# create a player and return error message is present
 	var room_node = get_room_node(room_id)
-	# check if exists in room already
 	for team_notation in [Globals.UNASSIGNED_TEAM_NOTATION, Globals.TEAM_1_NOTATION, Globals.TEAM_2_NOTATION]:
 		if room_node.has_node('Teams/%s/%s' % [team_notation, player_name]):
 			return 'Player Name Already Taken'
@@ -52,26 +50,25 @@ func create_player(player_id, player_name, room_id):
 	player.player_name = player_name
 	# add player to tree
 	room_node.get_node('Teams/Unassigned').add_child(player, true)
-
-	#room_node.room_teams_to_players['Unassigned'].append(player)
-	#room_node.room_teams_to_players_names['Unassigned'].append(player.player_name)
 	# save data for future time complexity reduction
-	room_node.room_player_ids.append(player_id)
+	room_node.room_player_basic_info[player_id] = {'player_name': player_name, 'team_name': 'Unassigned'}
 
 
 func get_room_node(room_id):
-	return get_tree().get_root().find_node(str(room_id), true, false)
+	# return get_tree().get_root().find_node(str(room_id), true, false)
+	return Globals.running_rooms_node.get_node(str(room_id))
 
 
 func get_room_player_ids(room_id, excluded_pid=null):
-	var pids = get_room_node(room_id).room_player_ids.duplicate()
+	var pids = get_room_node(room_id).room_player_basic_info.keys()
 	if excluded_pid:
 		pids.erase(excluded_pid)
 	return pids
-	
+
+
 func update_player_team(player_name, player_team_name, room_id):
 	"""
-	serverside only: update player's team in sceneTree hierarchy, by its name
+	serverside only: update player's team in sceneTree hierarchy & globals, by its name
 	"""
 	var player_node = get_player_node_by_name(player_name, room_id)
 	var new_team_node = player_node.get_parent().get_parent().get_node(player_team_name)
@@ -79,7 +76,7 @@ func update_player_team(player_name, player_team_name, room_id):
 	player_node.get_parent().remove_child(player_node)
 	# add to new team
 	new_team_node.add_child(player_node)
-
+	get_room_node(room_id).room_player_basic_info[int(player_node.name)].team_name = new_team_node.name
 
 
 func get_player_node_by_name(player_name, room_id):
@@ -87,6 +84,7 @@ func get_player_node_by_name(player_name, room_id):
 		for player_node in team_node.get_children():
 			if player_node.player_name == player_name:
 				return player_node
+
 
 func get_team_names_to_player_names(room_id):
 	# return: 

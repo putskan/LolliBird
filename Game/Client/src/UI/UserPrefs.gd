@@ -7,7 +7,7 @@ func _on_Create_pressed():
 	if player_name != '' and player_name.length() < 10:
 		self.find_node('Create', true, false).disabled = true
 		Server.request_player_creation(player_name, Globals.room_id)
-		# Server.request_player_login('create', nickname, null)
+
 
 func handle_player_creation_response(error_message):
 	if error_message:

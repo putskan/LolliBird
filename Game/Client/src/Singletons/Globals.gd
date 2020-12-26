@@ -11,3 +11,4 @@ var player_name
 var player_team = 'Unassigned'
 var room_id
 var is_host
+var room_players_dict = {}
