@@ -4,9 +4,11 @@ var network = WebSocketClient.new()
 var ip = "127.0.0.1"
 var port = 11111
 var server_url = 'ws://%s:%d' % [ip, port]
-signal response_received_team_names_to_players_names(result)
-signal peer_list_updated
-
+# signal response_received_team_names_to_players_names(result)
+# signal peer_list_updated
+signal init_teams_players
+signal change_team_of_player_sig(team_name, player_id)
+signal add_team_player(team_name, player_id, player_attributes)
 
 func _ready():
 	connect_to_server()
@@ -68,6 +70,45 @@ remote func response_player_creation(error_message):
 	get_tree().get_current_scene().handle_player_creation_response(error_message)
 
 
+remote func init_teams_players(teams_players_data):
+	Globals.teams_players = teams_players_data
+	emit_signal('init_teams_players')
+
+
+remote func add_team_player(team_name, player_id, player_attributes):
+	Globals.teams_players[team_name][player_id] = player_attributes
+	emit_signal("add_team_player", team_name, player_id, player_attributes)
+
+
+remote func change_team_of_player(old_team_name, new_team_name, player_id):
+	# update in Globals.teams_players & change own player team if needed.
+	if old_team_name == new_team_name:
+		return
+	var player_data
+	Globals.teams_players[new_team_name][player_id] = Globals.teams_players[old_team_name][player_id]
+	Globals.teams_players[old_team_name].erase(player_id)
+	
+	if player_id == get_tree().get_network_unique_id():
+		Globals.player_team = new_team_name
+		
+	### change in receiver
+	emit_signal("change_team_of_player_sig", old_team_name, new_team_name, player_id)
+
+
+func multicast_change_team_of_player(old_team_name, new_team_name, player_id):
+	rpc_id(1, 'multicast_change_team_of_player', old_team_name, new_team_name, player_id, Globals.room_id)
+
+#func request_teams_players_data():
+### implement on serverside ###
+#	rpc_id(1, 'get_teams_players_data', Globals.room_id)
+
+
+#remote func response_players_data(s_teams_players):
+## add to globals - Globals.teams_players
+#emit_signal('receive_teams_players_data_update', s_teams_players)
+	
+
+"""
 func request_lobby_entry_sync():
 	# relevant for GameLobby scene
 	# tell the server the player connected to lobby successfully,
@@ -96,7 +137,7 @@ func request_team_names_to_players_names():
 
 remote func response_team_names_to_players_names(result):
 	emit_signal('response_received_team_names_to_players_names', result)
-
+"""
 
 func request_start_game():
 	rpc_id(1, 'start_game', Globals.room_id)

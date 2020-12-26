@@ -1,15 +1,17 @@
 extends Control
 
+var player_id
 var current_scene
 var drag_position = null
 var teams_parent
 var teams_rect_nodes
-onready var bird_name = get_node("VBoxContainer/PlayerName").text
+onready var player_name = get_node("VBoxContainer/PlayerName").text
+onready var current_team_name = get_parent().get_parent().name
 
 func _ready():
 	yield(get_tree(),"idle_frame")
 	current_scene = get_tree().get_current_scene()
-	current_scene.all_lobby_birds.append(self)
+	# current_scene.all_lobby_birds.append(self)
 	teams_parent = get_tree().get_current_scene().get_node('VBoxContainer/Teams')
 	teams_rect_nodes = [current_scene.get_node('VBoxContainer/Teams/Team1'),
 						current_scene.get_node('VBoxContainer/Teams/Team2'), 
@@ -24,20 +26,20 @@ func drag_lobby_bird(event):
 			drag_position = get_global_mouse_position() - rect_global_position
 		else:
 			# end dragging & move to relevant container
-			var team_name_to_move_to = get_parent().get_parent().name
+			var team_name_to_move_to = current_team_name
 			for team_node in teams_rect_nodes:
 				# check if a valid place to move to
 				if team_node.name != team_name_to_move_to and is_control_inside_control(self.get_node("VBoxContainer/CenterContainer/Control"), team_node):
 					team_name_to_move_to = team_node.name
 					# notify the server of a bird move
-					Server.multicast_lobby_bird_move(bird_name, team_name_to_move_to)
-					break
+					### Server.multicast_lobby_bird_move(bird_name, team_name_to_move_to)
+					Server.change_team_of_player(current_team_name, team_name_to_move_to, player_id)
+					Server.multicast_change_team_of_player(current_team_name, team_name_to_move_to, player_id)
+					return
 			
-			# create a bird and remove this one (other method causes bugs)
-			current_scene.add_birds_to_teams({team_name_to_move_to: [bird_name]})
-			current_scene.all_lobby_birds.erase(self)
-			if bird_name == Globals.player_name:
-				Globals.player_team = team_name_to_move_to
+			# replace with a new player, if should return to the original team
+			self.name = self.name + '_delete'
+			current_scene.add_player_to_lobby(team_name_to_move_to, player_id, player_name)
 			queue_free()
 
 	if drag_position and event is InputEventMouseMotion:

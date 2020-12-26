@@ -3,7 +3,9 @@
 [ext_resource path="res://src/Players/GenericPlayer.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Players/LobbyBird.gd" type="Script" id=2]
 
-[node name="LobbyBird" type="Control"]
+[node name="LobbyBird" type="Control" groups=[
+"LobbyBirds",
+]]
 margin_right = 101.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 100, 50 )
