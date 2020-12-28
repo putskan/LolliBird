@@ -130,7 +130,7 @@ remote func receive_player_state(player_state, room_id):
 func multicast_players_states(room_id, players_states):
 	# called from room
 	var room_node = HelperFunctions.get_room_node(room_id)
-	var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
+	var pids = room_node.get_player_ids()
 	for pid in pids:
 		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
 
@@ -140,6 +140,8 @@ func multicast_players_states(room_id, players_states):
 # P2
 remote func round_start(room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)
+	######################### CHANGE TO FALSE/INIT ON ROUND FINISH
+	room_node.set_physics_process(true)
 	var pids = room_node.get_player_ids()
 	for pid in pids:
 		rpc_id(pid, 'round_start')

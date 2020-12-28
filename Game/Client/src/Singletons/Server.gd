@@ -12,6 +12,7 @@ signal add_team_player(team_name, player_id, player_attributes)
 signal start_game
 signal round_start
 signal round_finish
+signal receive_players_states(players_states)
 
 func _ready():
 	connect_to_server()
@@ -43,7 +44,7 @@ func _on_connection_succeeded():
 func request_room_id_join_validation(room_id):
 	# send room id to server for validation that the room exists
 	# called from JoinRoom
-	print('Client: sending roomid for check: %d' % room_id)
+	print('Client: verifying room id: %d' % room_id)
 	rpc_id(1, 'is_room_id_exists', room_id)
 
 
@@ -155,14 +156,14 @@ remote func assign_as_room_host():
 	Globals.is_host = true
 
 
-#func send_player_state(player_state):
-#	# call from player
-#	rpc_unreliable_id(1, 'receive_player_state', player_state, Globals.room_id)
+func send_player_state(player_state):
+	# call from player
+	rpc_unreliable_id(1, 'receive_player_state', player_state, Globals.room_id)
 
 
-#remote func receive_all_players_states(s_players_states):
-#	# send to function on map node
-#	get_tree().get_current_scene().update_all_players_states(s_players_states)
+remote func receive_all_players_states(s_players_states):
+	# caught by Map scene 
+	emit_signal('receive_players_states', s_players_states)
 
 
 #remote func update_room_players_dict(players_details, remove=false):

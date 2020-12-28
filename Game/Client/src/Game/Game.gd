@@ -19,7 +19,6 @@ func _on_StartRoundButton_pressed():
 
 
 func _on_round_start():
-	print('start round on client')
 	emit_signal('game_round_start')
 
 

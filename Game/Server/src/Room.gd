@@ -38,24 +38,36 @@ func _ready():
 
 
 func _physics_process(_delta):
-	# 20 fps
-	# remove player timestamp, change pids to players names, add server timestamp
-	# changing pids to player_names because client knows only names.
-	var player_state_to_client = {}
+	# runs 20 times per second
+	handle_players_states_distribution()
+	## Add check if finished round/collision/etc.
+
+
+func handle_players_states_distribution():
+	# clean & multicast players states
+	var players_states = prepare_players_states()
+	var room_id = int(self.name)
+	Server.multicast_players_states(room_id, players_states)
+
+
+func prepare_players_states():
+	# clean the players states for the client (remove clients' & add own timestamp)
+	var players_states_to_client = {}
 	for pid in player_state_collection:
-		var state = player_state_collection[pid].duplicate().erase('T')
-		player_state_to_client[find_node(str(pid), true, false).player_name] = state
-	player_state_to_client['T'] = OS.get_system_time_msecs()
-	Server.multicast_players_states(int(self.name), player_state_to_client)
+		var state = player_state_collection[pid].duplicate()
+		state.erase('T')
+		players_states_to_client[pid] = state
+	players_states_to_client['T'] = OS.get_system_time_msecs()
+	return players_states_to_client
 
 
 func update_player_state(player_id, player_state):
-	# update a player's state on the server
+	# update a player's state on the server (only on new timestamps)
+	# called on update from a client
 	if not player_state_collection.has(player_id):
 		player_state_collection[player_id] = player_state
 		
 	elif player_state_collection[player_id]['T'] < player_state['T']:
-		# update only if received timestamp is newer than the existing one
 		player_state_collection[player_id] = player_state
 
 
