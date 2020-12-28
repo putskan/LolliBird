@@ -110,13 +110,16 @@ remote func get_team_names_to_player_names(room_id):
 	rpc_id(get_tree().get_rpc_sender_id(), 'response_team_names_to_players_names', HelperFunctions.get_team_names_to_player_names(room_id))
 """
 
+
+######################################## Game ########################################
+
 remote func start_game(room_id):
 	# notify all other room players & start running
 	var room_node = HelperFunctions.get_room_node(room_id)
-	var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
+	var pids = room_node.get_player_ids()
 	for pid in pids:
 		rpc_id(pid, 'start_game')
-	HelperFunctions.get_room_node(room_id).set_physics_process(true)
+	# HelperFunctions.get_room_node(room_id).set_physics_process(true)
 
 
 remote func receive_player_state(player_state, room_id):
@@ -131,3 +134,13 @@ func multicast_players_states(room_id, players_states):
 	for pid in pids:
 		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
 
+###################
+
+
+# P2
+remote func round_start(room_id):
+	var room_node = HelperFunctions.get_room_node(room_id)
+	var pids = room_node.get_player_ids()
+	for pid in pids:
+		rpc_id(pid, 'round_start')
+	# do serverside stuff, update, stats etc

@@ -11,8 +11,8 @@ func handle_scene_change(event):
 	elif event == 'GoToLobby':
 		call_deferred('_deferred_change_scene', 'res://src/UI/GameLobby.tscn')
 	
-	elif event == 'StartGame':
-		call_deferred('_deferred_change_scene', 'res://src/Maps/Map.tscn')
+	elif event == 'StartGameScene':
+		call_deferred('_deferred_change_scene', 'res://src/Game/Game.tscn')
 
 
 func _deferred_change_scene(new_scene_path):

@@ -1,81 +1,68 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://assets/maps/blue_bg_1.jpg" type="Texture" id=1]
+[ext_resource path="res://assets/maps/map_1.jpg" type="Texture" id=1]
 [ext_resource path="res://src/Maps/Map.gd" type="Script" id=2]
-[ext_resource path="res://assets/maps/silver.png" type="Texture" id=4]
+[ext_resource path="res://src/UI/CountdownVideo.tscn" type="PackedScene" id=3]
 
-[node name="Map" type="Control"]
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 513.874, 8.25017 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10, 251.663 )
+
+[node name="Map" type="NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -100.0
+texture = ExtResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Floor" type="TextureRect" parent="."]
-show_behind_parent = true
-margin_right = 895.0
-margin_bottom = 307.0
-texture = ExtResource( 1 )
-expand = true
+[node name="Team1Players" type="VBoxContainer" parent="."]
+margin_top = 20.0
+margin_right = 150.0
+margin_bottom = 480.0
+rect_min_size = Vector2( 150, 460 )
+custom_constants/separation = 30
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="Team1Players" type="VBoxContainer" parent="Floor"]
+[node name="Team2Players" type="VBoxContainer" parent="."]
+anchor_left = 0.835
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -595.0
-rect_min_size = Vector2( 300, 307 )
+margin_top = 20.0
+margin_bottom = -20.0
+rect_min_size = Vector2( 150, 460 )
 custom_constants/separation = 30
-alignment = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Team2Players" type="VBoxContainer" parent="Floor"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = -300.0
-margin_top = -153.5
-margin_bottom = 153.5
-rect_min_size = Vector2( 300, 307 )
-custom_constants/separation = 30
-alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Borders" type="StaticBody2D" parent="."]
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Borders"]
-polygon = PoolVector2Array( 0.436567, -1.60146, 895.738, 0.117241, 895.031, 306.648, 1.78273, 307.568, 0.521484, 2.32293, 3.88507, 2.74338, 4.72592, 302.523, 891.451, 303.364, 892.208, 4.30317, 7.00224, 3.66971 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders"]
+position = Vector2( 515.189, 496.923 )
+shape = SubResource( 1 )
 
-[node name="UpperBounds" type="Sprite" parent="Borders"]
-position = Vector2( 198.92, -2.10078 )
-rotation = -3.14159
-scale = Vector2( 2.22953, 0.0155031 )
-texture = ExtResource( 4 )
-offset = Vector2( -111.953, -200 )
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Borders"]
+position = Vector2( 510.458, 6.53902 )
+shape = SubResource( 1 )
 
-[node name="LowerBounds" type="Sprite" parent="Borders"]
-position = Vector2( 199.05, 303.197 )
-rotation = -3.14159
-scale = Vector2( 2.23102, 0.0155031 )
-texture = ExtResource( 4 )
-offset = Vector2( -111.953, -200 )
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Borders"]
+position = Vector2( 9.34387, 253.887 )
+shape = SubResource( 2 )
 
-[node name="LeftBounds" type="Sprite" parent="Borders"]
-position = Vector2( -1.65271, 240.829 )
-rotation = -4.71238
-scale = Vector2( 0.778736, 0.0155031 )
-texture = ExtResource( 4 )
-offset = Vector2( -111.953, -200 )
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Borders"]
+position = Vector2( 1017.15, 254.221 )
+shape = SubResource( 2 )
 
-[node name="RightBounds" type="Sprite" parent="Borders"]
-position = Vector2( 891.347, 240.874 )
-rotation = -4.71238
-scale = Vector2( 0.777928, 0.0155031 )
-texture = ExtResource( 4 )
-offset = Vector2( -111.953, -200 )
+[node name="CountdownVideo" parent="." instance=ExtResource( 3 )]
+visible = false
+modulate = Color( 1, 1, 1, 0.827451 )
+self_modulate = Color( 1, 1, 1, 0.54902 )
+autoplay = false
+[connection signal="finished" from="CountdownVideo" to="." method="_on_CountdownVideo_finished"]

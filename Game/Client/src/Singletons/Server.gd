@@ -9,6 +9,9 @@ var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
 signal init_teams_players
 signal change_team_of_player_sig(team_name, player_id)
 signal add_team_player(team_name, player_id, player_attributes)
+signal start_game
+signal round_start
+signal round_finish
 
 func _ready():
 	connect_to_server()
@@ -33,6 +36,7 @@ func _on_connection_failed():
 
 
 func _on_connection_succeeded():
+	Globals.player_id = get_tree().get_network_unique_id()
 	print('succesfully connected')
 
 
@@ -88,7 +92,7 @@ remote func change_team_of_player(old_team_name, new_team_name, player_id):
 	Globals.teams_players[new_team_name][player_id] = Globals.teams_players[old_team_name][player_id]
 	Globals.teams_players[old_team_name].erase(player_id)
 	
-	if player_id == get_tree().get_network_unique_id():
+	if player_id == Globals.player_id:
 		Globals.player_team = new_team_name
 		
 	### change in receiver
@@ -144,33 +148,45 @@ func request_start_game():
 
 
 remote func start_game():
-	SceneHandler.handle_scene_change('StartGame')
+	emit_signal('start_game')
 
 
 remote func assign_as_room_host():
 	Globals.is_host = true
 
 
-func send_player_state(player_state):
-	# call from player
-	rpc_unreliable_id(1, 'receive_player_state', player_state, Globals.room_id)
+#func send_player_state(player_state):
+#	# call from player
+#	rpc_unreliable_id(1, 'receive_player_state', player_state, Globals.room_id)
 
 
-remote func receive_all_players_states(s_players_states):
-	# send to function on map node
-	get_tree().get_current_scene().update_all_players_states(s_players_states)
+#remote func receive_all_players_states(s_players_states):
+#	# send to function on map node
+#	get_tree().get_current_scene().update_all_players_states(s_players_states)
 
 
-remote func update_room_players_dict(players_details, remove=false):
-	# players_details - {player_id: {'player_name': name, 'team_name': team}, ...}
-	if remove:
-		for k in players_details:
-			Globals.room_players_dict.erase(k)
+#remote func update_room_players_dict(players_details, remove=false):
+#	# players_details - {player_id: {'player_name': name, 'team_name': team}, ...}
+#	if remove:
+#		for k in players_details:
+#			Globals.room_players_dict.erase(k)
+#	
+#	else:
+#		for k in players_details:
+#			Globals.room_players_dict[k] = players_details[k]
+#	emit_signal('peer_list_updated')
+
+
+
+func request_round_start():
+	rpc_id(1, 'round_start', Globals.room_id)
 	
-	else:
-		for k in players_details:
-			Globals.room_players_dict[k] = players_details[k]
-	emit_signal('peer_list_updated')
+remote func round_start():
+	emit_signal('round_start')
+
+
+
+
 
 
 

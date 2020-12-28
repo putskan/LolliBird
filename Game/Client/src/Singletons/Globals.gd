@@ -7,6 +7,7 @@ const TEAM_2_NOTATION = 'Team2'
 const UNASSIGNED_TEAM_NOTATION = 'Unassigned'
 
 # player related
+var player_id
 var player_name
 var player_team = 'Unassigned'
 var room_id

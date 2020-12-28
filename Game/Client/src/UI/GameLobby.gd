@@ -9,6 +9,7 @@ func _ready():
 	get_node("VBoxContainer/HBoxContainer/RoomID").text += str(Globals.room_id)
 	Server.connect('add_team_player', self, '_add_team_player')
 	Server.connect('change_team_of_player_sig', self, 'change_player_team')
+	Server.connect('start_game', self, 'start_game')
 	# if already got players info, start aligning. else, register for a signal
 	if Globals.teams_players:
 		init_lobby_players()
@@ -38,9 +39,6 @@ func _add_team_player(team_name, player_id, player_attributes):
 
 func remove_player_from_lobby(player_id):
 	### call on disconnection
-	print_tree_pretty()
-	print(player_id)
-	print(str(player_id))
 	find_node(str(player_id), true, false).queue_free()
 
 
@@ -79,5 +77,8 @@ func move_lobby_bird(bird_name, new_team):
 
 func _on_StartGame_pressed():
 	Server.request_start_game()
-	SceneHandler.handle_scene_change('StartGame')
+
+
+func start_game():
+	SceneHandler.handle_scene_change('StartGameScene')
 

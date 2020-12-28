@@ -6,9 +6,9 @@
 [node name="MainMenu" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 50.9439
+margin_left = 49.8215
 margin_top = 48.1122
-margin_right = -49.0561
+margin_right = -50.1785
 margin_bottom = -51.8877
 script = ExtResource( 2 )
 __meta__ = {

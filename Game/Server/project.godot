@@ -16,12 +16,12 @@ _global_script_class_icons={
 [application]
 
 config/name="Agile - Server"
-run/main_scene="res://src/RunningRooms.tscn"
+run/main_scene="res://src/Singletons/RunningRooms.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Server="*res://Server.gd"
+Server="*res://src/Singletons/Server.gd"
 HelperFunctions="*res://src/Singletons/HelperFunctions.gd"
 Globals="*res://src/Singletons/Globals.tscn"
 
