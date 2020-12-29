@@ -9,6 +9,8 @@ var latest_players_states_timestamp = null
 var players_ids_to_nodes = {}
 onready var map_height = null
 onready var countdown_video_node = get_node('CountdownVideo')
+signal player_caught(catcher_pid, runner_pid)
+
 
 """
 func _ready():
@@ -86,23 +88,46 @@ func init_all_players():
 
 
 func init_map_player(team_name, player_id, player_name):
-	var player_node = create_player_node(player_id, player_name)
+	var player_node = create_player_node(team_name, player_id, player_name)
 	# for reduction of complexity in other functions (e.g., update_all_players_states)
 	players_ids_to_nodes[player_id] = player_node
 	align_player_node(player_node, team_name)
 
 
-func create_player_node(player_id, player_name):
+func create_player_node(team_name, player_id, player_name):
 	var player_node
 	if player_id == Globals.player_id:
 		player_node = player_bird_res.instance()
 		# make bird distinguishable
 		player_node.set_modulate(Color(248, 0, 0))
 		client_player_node = player_node
+		player_node.connect('collided_with_another_player', self, 'handle_players_collision')
 
 	else:
 		player_node = dummy_bird_res.instance()
 	
+	player_node.name = str(player_id)
+	player_node = set_player_collision(player_node, team_name)
+	return player_node
+
+
+func set_player_collision(player_node, team_name):
+	# collide and slide with own team, detect collision with the other team.
+	var team_layer_bit
+	var other_team_layer_bit
+	if team_name == Globals.catchers_team:
+		team_layer_bit = 2
+		other_team_layer_bit = 3
+	else:
+		team_layer_bit = 3
+		other_team_layer_bit = 2
+
+	player_node.set_collision_layer_bit(team_layer_bit, true)
+	player_node.set_collision_mask_bit(team_layer_bit, true)
+	
+	var collision_detector = player_node.get_node('PlayersCollisionDetector')
+	collision_detector.set_collision_layer_bit(team_layer_bit, true)
+	collision_detector.set_collision_mask_bit(other_team_layer_bit, true)
 	return player_node
 
 
@@ -129,6 +154,29 @@ func update_all_players_states(players_states):
 		players_states.erase('T')
 		players_states.erase(Globals.player_id)
 		for player_id in players_states:
-			var new_position = players_states[player_id]['P']
-			players_ids_to_nodes[player_id].set_global_position(new_position)
+			if players_ids_to_nodes.has(player_id):
+				# if not eliminated
+				var new_position = players_states[player_id]['P']
+				players_ids_to_nodes[player_id].set_global_position(new_position)
+
+
+func handle_players_collision(other_player_id):
+	if is_player_caught_on_collision():
+		# notify own player was eliminated by another
+		emit_signal('player_caught', other_player_id, Globals.player_id)
+		eliminate_player(client_player_node)
+		### update details, send to server, hide player, etc. ###
+		pass
+
+
+func is_player_caught_on_collision():
+	# called on collision with another player
+	# check if the player was caught by one of the other team's players
+	return Globals.catchers_team != Globals.player_team
+
+
+func eliminate_player(eliminated_player_node):
+	var pid = int(eliminated_player_node.name)
+	players_ids_to_nodes.erase(pid)
+	eliminated_player_node.queue_free()
 

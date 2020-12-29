@@ -18,14 +18,25 @@ radius = 5.5
 height = 7.0
 
 [node name="GenericPlayer" type="KinematicBody2D"]
+collision_layer = 0
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.0296434, 0.0282415 )
 frames = SubResource( 1 )
+frame = 2
 playing = true
 centered = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 12.8499, 7.16833 )
+rotation = 1.57079
+shape = SubResource( 2 )
+
+[node name="PlayersCollisionDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="PlayersCollisionDetector"]
 position = Vector2( 12.8499, 7.16833 )
 rotation = 1.57079
 shape = SubResource( 2 )

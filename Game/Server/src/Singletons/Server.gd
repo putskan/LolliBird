@@ -134,10 +134,7 @@ func multicast_players_states(room_id, players_states):
 	for pid in pids:
 		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
 
-###################
 
-
-# P2
 remote func round_start(room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)
 	######################### CHANGE TO FALSE/INIT ON ROUND FINISH
@@ -146,3 +143,15 @@ remote func round_start(room_id):
 	for pid in pids:
 		rpc_id(pid, 'round_start')
 	# do serverside stuff, update, stats etc
+
+
+remote func receive_player_caught(catcher_pid, runner_pid, room_id):
+	##### update locally, remove from player_states, determine win, etc. #####
+	
+	var room_node = HelperFunctions.get_room_node(room_id)
+	var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
+	for pid in pids:
+		rpc_id(pid, 'receive_player_caught', catcher_pid, runner_pid)
+
+
+

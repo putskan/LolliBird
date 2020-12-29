@@ -13,6 +13,8 @@ signal start_game
 signal round_start
 signal round_finish
 signal receive_players_states(players_states)
+signal player_caught(catcher_pid, runner_pid)
+
 
 func _ready():
 	connect_to_server()
@@ -186,8 +188,14 @@ remote func round_start():
 	emit_signal('round_start')
 
 
+func multicast_player_caught(catcher_pid, runner_pid):
+	rpc_id(1, 'receive_player_caught', catcher_pid, runner_pid, Globals.room_id)
 
 
+remote func receive_player_caught(catcher_pid, runner_pid):
+	# caught by Game
+	print('received_player_caught_remotely!')
+	emit_signal('player_caught', catcher_pid, runner_pid)
 
 
 
