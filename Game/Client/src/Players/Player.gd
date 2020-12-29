@@ -38,9 +38,8 @@ func _movement_loop():
 func _send_player_state():
 	var player_state = {'T': OS.get_system_time_msecs(), 'P': get_global_position()}
 	Server.send_player_state(player_state)
-	
 
 
-func _on_PlayersCollisionDetector_area_shape_entered(area_id, area, area_shape, self_shape):
+func _on_PlayersCollisionDetector_area_shape_entered(_area_id, area, _area_shape, _self_shape):
 	var other_player_id = int(area.get_parent().name)
 	emit_signal('collided_with_another_player', other_player_id)

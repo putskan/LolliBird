@@ -6,6 +6,7 @@
 [node name="Game" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = 10.0
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -13,20 +14,72 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 1024.0
-margin_bottom = 604.0
+margin_bottom = 594.0
 
-[node name="UIPane" type="Control" parent="VBoxContainer"]
+[node name="UIPane" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 1024.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 5
+custom_constants/separation = 150
+alignment = 1
 
-[node name="StartRoundButton" type="Button" parent="VBoxContainer/UIPane"]
-anchor_left = 0.071
-anchor_top = 0.353
-anchor_right = 0.188
-anchor_bottom = 0.353
-margin_right = 12.0
-margin_bottom = 20.0
+[node name="Team1" type="VBoxContainer" parent="VBoxContainer/UIPane"]
+margin_left = 265.0
+margin_right = 312.0
+margin_bottom = 100.0
+custom_constants/separation = 15
+
+[node name="Team2Label" type="Label" parent="VBoxContainer/UIPane/Team1"]
+margin_right = 47.0
+margin_bottom = 14.0
+text = "Team 1"
+
+[node name="Scoreboard" type="GridContainer" parent="VBoxContainer/UIPane/Team1"]
+margin_top = 29.0
+margin_right = 47.0
+margin_bottom = 29.0
+custom_constants/hseparation = 30
+columns = 3
+
+[node name="Team2" type="VBoxContainer" parent="VBoxContainer/UIPane"]
+margin_left = 462.0
+margin_right = 509.0
+margin_bottom = 100.0
+custom_constants/separation = 15
+
+[node name="Team2Label" type="Label" parent="VBoxContainer/UIPane/Team2"]
+margin_right = 47.0
+margin_bottom = 14.0
+text = "Team 2"
+
+[node name="Scoreboard" type="GridContainer" parent="VBoxContainer/UIPane/Team2"]
+margin_top = 29.0
+margin_right = 47.0
+margin_bottom = 29.0
+custom_constants/hseparation = 30
+columns = 3
+
+[node name="Control" type="Control" parent="VBoxContainer/UIPane"]
+margin_left = 659.0
+margin_right = 759.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StartRoundButton" type="Button" parent="VBoxContainer/UIPane/Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -42.5
+margin_top = -10.0
+margin_right = 42.5
+margin_bottom = 10.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "Start Round"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -37,6 +90,6 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 104.0
 margin_right = 1024.0
-margin_bottom = 604.0
-rect_min_size = Vector2( 1024, 500 )
-[connection signal="pressed" from="VBoxContainer/UIPane/StartRoundButton" to="." method="_on_StartRoundButton_pressed"]
+margin_bottom = 594.0
+rect_min_size = Vector2( 1024, 490 )
+[connection signal="pressed" from="VBoxContainer/UIPane/Control/StartRoundButton" to="." method="_on_StartRoundButton_pressed"]

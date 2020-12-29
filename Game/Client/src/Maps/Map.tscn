@@ -13,7 +13,7 @@ extents = Vector2( 10, 251.663 )
 [node name="Map" type="NinePatchRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_bottom = -100.0
+margin_bottom = -110.0
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
@@ -45,7 +45,7 @@ __meta__ = {
 [node name="Borders" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders"]
-position = Vector2( 515.189, 496.923 )
+position = Vector2( 515.189, 484.923 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Borders"]

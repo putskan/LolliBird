@@ -11,7 +11,7 @@ signal change_team_of_player_sig(team_name, player_id)
 signal add_team_player(team_name, player_id, player_attributes)
 signal start_game
 signal round_start
-signal round_finish
+# signal round_finish
 signal receive_players_states(players_states)
 signal player_caught(catcher_pid, runner_pid)
 
@@ -20,7 +20,7 @@ func _ready():
 	connect_to_server()
 
 
-func _process(delta):
+func _process(_delta):
 	if network.get_connection_status() in [NetworkedMultiplayerPeer.CONNECTION_CONNECTED, NetworkedMultiplayerPeer.CONNECTION_CONNECTING]:
 		network.poll();
 
@@ -91,7 +91,6 @@ remote func change_team_of_player(old_team_name, new_team_name, player_id):
 	# update in Globals.teams_players & change own player team if needed.
 	if old_team_name == new_team_name:
 		return
-	var player_data
 	Globals.teams_players[new_team_name][player_id] = Globals.teams_players[old_team_name][player_id]
 	Globals.teams_players[old_team_name].erase(player_id)
 	

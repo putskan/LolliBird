@@ -15,3 +15,4 @@ var is_host
 var catchers_team = 'Team1'
 # var room_players_dict = {}
 var teams_players = null
+var captures = {}
