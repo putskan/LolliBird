@@ -163,6 +163,7 @@ remote func multicast_round_finish(room_node):
 	for pid in pids:
 		rpc_id(pid, 'receive_round_finish')
 
+
 func multicast_game_finish(winning_team, room_node):
 	var pids = room_node.get_player_ids()
 	for pid in pids:

@@ -1,7 +1,7 @@
 extends Node2D
 
-# var current_round = 1
-# var total_rounds = 5
+var round_number = 1
+var total_rounds = 6
 
 var host_id
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
@@ -17,7 +17,6 @@ teams_players = {
 var teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
 var player_ids = []
 var captures = {}
-## remove captives and init every round##
 var players_left_in_round
 
 
@@ -162,6 +161,8 @@ func on_player_finished_round(pid):
 
 func round_finish():
 	print('Round finished!')
+	round_number += 1
+	player_state_collection = {}
 	set_physics_process(false)
 	Server.multicast_round_finish(self)
 	var check_finish_data = check_game_finish()
@@ -182,12 +183,26 @@ func check_game_finish():
 				players_number[team_name] += 1
 				if captures.has(pid):
 					captures_number[team_name] += captures[pid].size()
+
+	if round_number > total_rounds:
+		var team_1_players_left = players_number['Team1'] - captures_number['Team2']
+		var team_2_players_left = players_number['Team2'] - captures_number['Team1']
+		if team_1_players_left > team_2_players_left:
+			return [true, 'Team1']
+			
+		elif team_1_players_left < team_2_players_left:
+			return [true, 'Team2']
+			
+		else:
+			return [true, 'Draw']
+			
+	else:
+		# check if a team fully eliminated the other one
+		if captures_number['Team1'] == players_number['Team2']:
+			return [true, 'Team1']
 	
-	if captures_number['Team1'] == players_number['Team2']:
-		return [true, 'Team1']
-	
-	if captures_number['Team2'] == players_number['Team1']:
-		return [true, 'Team2']
+		if captures_number['Team2'] == players_number['Team1']:
+			return [true, 'Team2']
 
 	return [false, null]
 
