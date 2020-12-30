@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/players/3/frame-1.png" type="Texture" id=1]
+[ext_resource path="res://assets/players/1/frame-1.png" type="Texture" id=2]
+[ext_resource path="res://assets/backgrounds/BG 2/Mount.png" type="Texture" id=3]
+
+[node name="MenuBg" type="CanvasLayer"]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -0.943878
+margin_bottom = -0.943848
+rect_min_size = Vector2( 1024, 600 )
+texture = ExtResource( 3 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="frame-1" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.901961 )
+position = Vector2( 118.799, 117.528 )
+scale = Vector2( 0.161646, 0.166748 )
+texture = ExtResource( 2 )
+
+[node name="frame-2" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.901961 )
+position = Vector2( 803.009, 304.616 )
+scale = Vector2( -0.122124, 0.134922 )
+texture = ExtResource( 1 )
