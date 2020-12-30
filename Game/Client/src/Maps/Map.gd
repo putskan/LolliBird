@@ -7,7 +7,6 @@ var PLAYER_POSITION_OFFSET = 20
 # last time server sent players states
 var latest_players_states_timestamp = null
 var players_ids_to_nodes = {}
-onready var map_height = null
 onready var countdown_video_node = get_node('CountdownVideo')
 signal player_caught(catcher_pid, runner_pid)
 
@@ -18,6 +17,7 @@ func _ready():
 	yield(get_tree(),"idle_frame")
 	var game_node = get_tree().get_current_scene()
 	game_node.connect('game_round_start', self, '_on_game_round_start')
+	game_node.connect('game_round_finish', self, '_on_game_round_finish')
 
 
 func _on_game_round_start():
@@ -25,7 +25,10 @@ func _on_game_round_start():
 	countdown_video_node.visible = true
 	countdown_video_node.play()
 
-	
+func _on_game_round_finish():
+	init_all_players()
+
+
 func _on_CountdownVideo_finished():
 	# finished animation. can now hide it and start round!
 	countdown_video_node.visible = false
@@ -33,31 +36,43 @@ func _on_CountdownVideo_finished():
 
 
 func init_all_players():
+	# init players which are not captives
+	clear_map_players()
+	var captives = []
+	for captives_list in Globals.captures.values():
+		captives += captives_list
+	
 	for team_name in Globals.teams_players.keys():
 		if team_name != 'Unassigned':
 			for player_id in Globals.teams_players[team_name]:
-				var player_name = Globals.teams_players[team_name][player_id]['player_name']
-				init_map_player(team_name, player_id, player_name)
+				if not player_id in captives:
+					var player_name = Globals.teams_players[team_name][player_id]['player_name']
+					init_map_player(team_name, player_id, player_name)
 
 
-func init_map_player(team_name, player_id, player_name):
+func init_map_player(team_name, player_id, _player_name):
 	var player_node = create_player_node(team_name, player_id)
 	# for reduction of complexity in other functions (e.g., update_all_players_states)
 	players_ids_to_nodes[player_id] = player_node
 	align_player_node(player_node, team_name)
 
 
+func clear_map_players():
+	for player_node in players_ids_to_nodes.values():
+		player_node.queue_free()
+	players_ids_to_nodes = {}
+
+
 func create_player_node(team_name, player_id):
 	var player_node
 	if player_id == Globals.player_id:
 		player_node = player_bird_res.instance()
-		# make bird distinguishable
-		player_node.set_modulate(Color(248, 0, 0))
 		client_player_node = player_node
 		player_node.connect('collided_with_another_player', self, 'handle_players_collision')
 
 	else:
 		player_node = dummy_bird_res.instance()
+		player_node.get_node("AnimatedSprite").play(team_name)
 	
 	player_node.name = str(player_id)
 	player_node = set_player_collision(player_node, team_name)
@@ -69,11 +84,15 @@ func set_player_collision(player_node, team_name):
 	var team_layer_bit
 	var other_team_layer_bit
 	if team_name == Globals.catchers_team:
-		team_layer_bit = 2
-		other_team_layer_bit = 3
+		print('cathcer')
+		team_layer_bit = Globals.CATCHERS_COLLISION_BIT
+		other_team_layer_bit = Globals.RUNNERS_COLLISION_BIT
+		
 	else:
-		team_layer_bit = 3
-		other_team_layer_bit = 2
+		print('runner')
+		team_layer_bit = Globals.RUNNERS_COLLISION_BIT
+		other_team_layer_bit = Globals.CATCHERS_COLLISION_BIT
+
 
 	player_node.set_collision_layer_bit(team_layer_bit, true)
 	player_node.set_collision_mask_bit(team_layer_bit, true)
@@ -81,6 +100,7 @@ func set_player_collision(player_node, team_name):
 	var collision_detector = player_node.get_node('PlayersCollisionDetector')
 	collision_detector.set_collision_layer_bit(team_layer_bit, true)
 	collision_detector.set_collision_mask_bit(other_team_layer_bit, true)
+	collision_detector.set_collision_mask_bit(Globals.END_OF_MAP_COLLISION_BIT, true)
 	return player_node
 
 

@@ -137,21 +137,34 @@ func multicast_players_states(room_id, players_states):
 
 remote func round_start(room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)
-	######################### CHANGE TO FALSE/INIT ON ROUND FINISH
-	room_node.set_physics_process(true)
+	room_node.round_start()
 	var pids = room_node.get_player_ids()
 	for pid in pids:
 		rpc_id(pid, 'round_start')
-	# do serverside stuff, update, stats etc
 
 
 remote func receive_player_caught(catcher_pid, runner_pid, room_id):
-	##### update locally, remove from player_states, determine win, etc. #####
-	
 	var room_node = HelperFunctions.get_room_node(room_id)
 	var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
 	for pid in pids:
 		rpc_id(pid, 'receive_player_caught', catcher_pid, runner_pid)
+	##### update locally, remove from player_states, determine win, etc. #####
+	room_node.on_player_caught(catcher_pid, runner_pid)
 
 
+remote func receive_player_reached_eom(room_id):
+	var pid = get_tree().get_rpc_sender_id()
+	var room_node = HelperFunctions.get_room_node(room_id)
+	room_node.on_player_finished_round(pid)
 
+
+remote func multicast_round_finish(room_node):
+	var pids = room_node.get_player_ids()
+	for pid in pids:
+		rpc_id(pid, 'receive_round_finish')
+
+func multicast_game_finish(winning_team, room_node):
+	var pids = room_node.get_player_ids()
+	for pid in pids:
+		rpc_id(pid, 'receive_game_finish', winning_team)
+	

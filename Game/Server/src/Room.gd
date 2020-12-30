@@ -3,33 +3,22 @@ extends Node2D
 # var current_round = 1
 # var total_rounds = 5
 
-# the room's creator
 var host_id
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
 var player_state_collection = {}
 
 """
 teams_players = {
-	'Team1': 
-		{
-			player_id1: {'player_name': player_name, 'otherkey': othervalue}, 
-			player_id2: {'player_name': player_name, 'otherkey': othervalue},
-		}
-	'Team2': 
-		{
-			player_id1: {'player_name': player_name, 'otherkey': othervalue}, 
-			player_id2: {'player_name': player_name, 'otherkey': othervalue},
-		}
-	'Unassigned':
-		{
-			player_id1: {'player_name': player_name, 'otherkey': othervalue}, 
-			player_id2: {'player_name': player_name, 'otherkey': othervalue},
-		}
+	'Team1': {player_id1: {'player_name': player_name, 'otherkey': othervalue}, ...}
+	'Team2': {player_id1: {'player_name': player_name, 'otherkey': othervalue}, ...}
+	'Unassigned': {player_id1: {'player_name': player_name, 'otherkey': othervalue}, ...}
 }
 """
-
 var teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
 var player_ids = []
+var captures = {}
+## remove captives and init every round##
+var players_left_in_round
 
 
 func _ready():
@@ -140,3 +129,72 @@ func close_room():
 	Globals.running_rooms_ids.erase(int(self.name))
 	queue_free()
 
+
+func round_start():
+	set_physics_process(true)
+	# init list of players left, so we could know when every1 finished
+	players_left_in_round = player_ids.duplicate()
+	for captives_ids in captures.values():
+		for captive_id in captives_ids:
+			players_left_in_round.erase(captive_id)
+
+
+func on_player_caught(catcher_pid, runner_pid):
+	# handle player finishing round, update catch info
+	on_player_finished_round(runner_pid)
+	update_catch_info(catcher_pid, runner_pid)
+
+
+func update_catch_info(catcher_pid, runner_pid):
+	# update new captives and release ones if needed
+	if captures.has(catcher_pid):
+		captures[catcher_pid].append(runner_pid)
+	else:
+		captures[catcher_pid] = [runner_pid]
+	captures.erase(runner_pid)
+
+
+func on_player_finished_round(pid):
+	players_left_in_round.erase(pid)
+	if players_left_in_round.empty():
+		round_finish()
+
+
+func round_finish():
+	print('Round finished!')
+	set_physics_process(false)
+	Server.multicast_round_finish(self)
+	var check_finish_data = check_game_finish()
+	if check_finish_data[0]:
+		Server.multicast_game_finish(check_finish_data[1], self)
+		print('Game Over! %s Has Won!' % check_finish_data[1])
+	else:
+		print('Game aint over until its over!')
+	
+
+func check_game_finish():
+	# return [true, winning_team] if game finished, [false, null] otherwise
+	var players_number = {'Team1': 0, 'Team2': 0}
+	var captures_number = {'Team1': 0, 'Team2': 0}
+	for team_name in teams_players:
+		if team_name in ['Team1', 'Team2']:
+			for pid in teams_players[team_name]:
+				players_number[team_name] += 1
+				if captures.has(pid):
+					captures_number[team_name] += captures[pid].size()
+	
+	if captures_number['Team1'] == players_number['Team2']:
+		return [true, 'Team1']
+	
+	if captures_number['Team2'] == players_number['Team1']:
+		return [true, 'Team2']
+
+	return [false, null]
+
+
+func get_captives():
+	# return a list of all captives pids
+	var all_captives = []
+	for captive_list in captures.values():
+		all_captives += captive_list
+	return all_captives

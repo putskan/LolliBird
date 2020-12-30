@@ -1,15 +1,33 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=15 format=2]
 
+[ext_resource path="res://assets/players/2/frame-2.png" type="Texture" id=1]
 [ext_resource path="res://assets/players/1/frame-2.png" type="Texture" id=2]
 [ext_resource path="res://assets/players/1/frame-3.png" type="Texture" id=3]
 [ext_resource path="res://assets/players/1/frame-4.png" type="Texture" id=4]
 [ext_resource path="res://assets/players/1/frame-1.png" type="Texture" id=5]
+[ext_resource path="res://assets/players/3/frame-4.png" type="Texture" id=6]
+[ext_resource path="res://assets/players/2/frame-1.png" type="Texture" id=7]
+[ext_resource path="res://assets/players/2/frame-4.png" type="Texture" id=8]
+[ext_resource path="res://assets/players/2/frame-3.png" type="Texture" id=9]
+[ext_resource path="res://assets/players/3/frame-2.png" type="Texture" id=10]
+[ext_resource path="res://assets/players/3/frame-1.png" type="Texture" id=11]
+[ext_resource path="res://assets/players/3/frame-3.png" type="Texture" id=12]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 11 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "Team2",
+"speed": 11.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 8 ) ],
+"loop": true,
+"name": "Team1",
+"speed": 11.0
+}, {
 "frames": [ ExtResource( 5 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": true,
-"name": "default",
+"name": "Unassigned",
 "speed": 11.0
 } ]
 
@@ -23,6 +41,7 @@ collision_layer = 0
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.0296434, 0.0282415 )
 frames = SubResource( 1 )
+animation = "Unassigned"
 frame = 2
 playing = true
 centered = false

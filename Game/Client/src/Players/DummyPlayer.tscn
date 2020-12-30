@@ -4,3 +4,6 @@
 
 [node name="Player" instance=ExtResource( 1 )]
 script = null
+
+[node name="AnimatedSprite" parent="." index="0"]
+frame = 1

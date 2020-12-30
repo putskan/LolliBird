@@ -11,10 +11,10 @@ signal change_team_of_player_sig(team_name, player_id)
 signal add_team_player(team_name, player_id, player_attributes)
 signal start_game
 signal round_start
-# signal round_finish
+signal round_finish
 signal receive_players_states(players_states)
 signal player_caught(catcher_pid, runner_pid)
-
+signal game_finish(winning_team)
 
 func _ready():
 	connect_to_server()
@@ -104,46 +104,6 @@ remote func change_team_of_player(old_team_name, new_team_name, player_id):
 func multicast_change_team_of_player(old_team_name, new_team_name, player_id):
 	rpc_id(1, 'multicast_change_team_of_player', old_team_name, new_team_name, player_id, Globals.room_id)
 
-#func request_teams_players_data():
-### implement on serverside ###
-#	rpc_id(1, 'get_teams_players_data', Globals.room_id)
-
-
-#remote func response_players_data(s_teams_players):
-## add to globals - Globals.teams_players
-#emit_signal('receive_teams_players_data_update', s_teams_players)
-	
-
-"""
-func request_lobby_entry_sync():
-	# relevant for GameLobby scene
-	# tell the server the player connected to lobby successfully,
-	# receive all other relevant players details (player names)
-	rpc_id(1, 'client_lobby_entry_sync', Globals.player_name, Globals.room_id)
-
-
-remote func sync_lobby_players(teams_to_players_dict):
-	# relevant for GameLobby scene
-	# receive a dict of the players to add to the lobby (for sync purposes)
-	get_tree().get_current_scene().add_birds_to_teams(teams_to_players_dict)
-
-
-func multicast_lobby_bird_move(bird_name, new_team):
-	rpc_id(1, 'multicast_lobby_bird_move', bird_name, new_team, Globals.room_id)
-
-
-remote func move_lobby_bird(bird_name, new_team):
-	# current scene should be GameLobby
-	get_tree().get_current_scene().move_lobby_bird(bird_name, new_team)
-
-
-func request_team_names_to_players_names():
-	rpc_id(1, 'get_team_names_to_player_names', Globals.room_id)
-
-
-remote func response_team_names_to_players_names(result):
-	emit_signal('response_received_team_names_to_players_names', result)
-"""
 
 func request_start_game():
 	rpc_id(1, 'start_game', Globals.room_id)
@@ -167,22 +127,10 @@ remote func receive_all_players_states(s_players_states):
 	emit_signal('receive_players_states', s_players_states)
 
 
-#remote func update_room_players_dict(players_details, remove=false):
-#	# players_details - {player_id: {'player_name': name, 'team_name': team}, ...}
-#	if remove:
-#		for k in players_details:
-#			Globals.room_players_dict.erase(k)
-#	
-#	else:
-#		for k in players_details:
-#			Globals.room_players_dict[k] = players_details[k]
-#	emit_signal('peer_list_updated')
-
-
-
 func request_round_start():
 	rpc_id(1, 'round_start', Globals.room_id)
-	
+
+
 remote func round_start():
 	emit_signal('round_start')
 
@@ -197,5 +145,14 @@ remote func receive_player_caught(catcher_pid, runner_pid):
 	emit_signal('player_caught', catcher_pid, runner_pid)
 
 
+func notify_player_reached_eom():
+	# eom > end of map
+	rpc_id(1, 'receive_player_reached_eom', Globals.room_id)
 
 
+remote func receive_round_finish():
+	emit_signal('round_finish')
+
+
+remote func receive_game_finish(winning_team):
+	emit_signal('game_finish', winning_team)

@@ -3,6 +3,7 @@ extends MarginContainer
 var scoreboard_player_label_name_pattern = 'ScoreboardLabel-%d'
 onready var start_round_button_node = find_node('StartRoundButton', true, false)
 onready var map_node = find_node('Map', true, false)
+onready var ui_round_number_node = get_node("VBoxContainer/UIPane/Control/RoundNumber")
 onready var ui_scoreboard_nodes = {
 									'Team1': get_node("VBoxContainer/UIPane/Team1/Scoreboard"),
 									'Team2': get_node("VBoxContainer/UIPane/Team2/Scoreboard")
@@ -17,10 +18,13 @@ func _ready():
 	else:
 		start_round_button_node.disabled = true
 	Server.connect('round_start', self, '_on_round_start')
-	# Server.connect('round_finish', self, '_on_round_finish')
-	map_node.connect('player_caught', self, '_on_player_caught')
+	Server.connect('round_finish', self, '_on_round_finish')
+	Server.connect('game_finish', self, '_on_game_finish')
 	Server.connect('player_caught', self, '_on_player_caught')
+	map_node.connect('player_caught', self, '_on_player_caught')
+
 	ui_init_players_scoreboard()
+	ui_update_round_number()
 
 
 func _on_StartRoundButton_pressed():
@@ -32,15 +36,16 @@ func _on_round_start():
 	emit_signal('game_round_start')
 
 
-# for later ################################
 func _on_round_finish():
+	if Globals.round_number < Globals.total_rounds:
+		# make sure not to exceede
+		Globals.round_number += 1
+		ui_update_round_number()
+	
 	if Globals.is_host:
 		start_round_button_node.disabled = false
-	else:
-		# add - waiting for host to start round
-		pass
+	
 	emit_signal('game_round_finish')
-############################################
 
 
 func _on_player_caught(catcher_pid, runner_pid):
@@ -51,16 +56,13 @@ func _on_player_caught(catcher_pid, runner_pid):
 	else:
 		var runner_node = map_node.find_node(str(runner_pid), true, false)
 		map_node.eliminate_player(runner_node)
-		
-	### update UI, relevant variables, etc ###
+
 	handle_capture_data(catcher_pid, runner_pid)
 
 
 func handle_capture_data(catcher_pid, runner_pid):
 	save_capture_data(catcher_pid, runner_pid)
 	ui_save_capture_data(catcher_pid, runner_pid)
-	#release_captives()
-	#ui_release_captives()
 
 
 func save_capture_data(catcher_pid, runner_pid):
@@ -93,3 +95,16 @@ func ui_init_players_scoreboard():
 				player_label.name = scoreboard_player_label_name_pattern % pid
 				player_label.text = '%s: 0' % player_name
 				parent_node.add_child(player_label)
+
+
+func ui_update_round_number():
+	ui_round_number_node.text = 'Round: %d/%d' % [Globals.round_number, Globals.total_rounds]
+
+
+func _on_game_finish(winning_team):
+	start_round_button_node.disabled = true
+	var game_over_pop_up = get_node('GameOverPopup')
+	game_over_pop_up.get_node("GameOverText").text = '%s won!' % winning_team
+	game_over_pop_up.popup()
+	print('Client: %s won' % winning_team)
+	
