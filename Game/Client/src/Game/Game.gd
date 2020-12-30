@@ -25,6 +25,7 @@ func _ready():
 
 	ui_init_players_scoreboard()
 	ui_update_round_number()
+	ui_update_catchers_team()
 
 
 func _on_StartRoundButton_pressed():
@@ -38,7 +39,9 @@ func _on_round_start():
 
 func _on_round_finish():
 	if Globals.round_number < Globals.total_rounds:
-		# make sure not to exceede
+		# make sure not to exceed
+		change_catchers_team()
+		ui_update_catchers_team()
 		Globals.round_number += 1
 		ui_update_round_number()
 	
@@ -46,6 +49,17 @@ func _on_round_finish():
 		start_round_button_node.disabled = false
 	
 	emit_signal('game_round_finish')
+
+
+func change_catchers_team():
+	if Globals.catchers_team == 'Team1':
+		Globals.catchers_team = 'Team2'
+	else:
+		Globals.catchers_team = 'Team1'
+
+
+func ui_update_catchers_team():
+	get_node("VBoxContainer/UIPane/Control/RoundCatcher").text = 'Catcher: %s' % Globals.catchers_team
 
 
 func _on_player_caught(catcher_pid, runner_pid):
