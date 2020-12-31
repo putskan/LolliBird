@@ -19,13 +19,13 @@ func _movement_loop():
 		motion.y += 5
 		
 	else:
-		motion.y = motion.y / 1.1	
+		motion.y = motion.y / 1.1
 	
 	# should be get_scale.x -> there seems to be a bug in Godot.
-	if Input.is_action_pressed("ui_right") and get_scale().y > 0:
+	if Input.is_action_pressed("ui_right") and not $AnimatedSprite.flip_h:
 		motion.x += 5
 
-	elif Input.is_action_pressed("ui_left") and get_scale().y < 0:
+	elif Input.is_action_pressed("ui_left") and $AnimatedSprite.flip_h:
 			motion.x -= 5
 
 	else:
@@ -42,9 +42,7 @@ func _send_player_state():
 
 func _on_PlayersCollisionDetector_area_shape_entered(_area_id, area, _area_shape, _self_shape):
 	# check who collided and act accordingly 
-	print('colliding')
 	if area.get_collision_layer_bit(Globals.CATCHERS_COLLISION_BIT) or area.get_collision_layer_bit(Globals.CATCHERS_COLLISION_BIT):
-		print('a')
 		var other_player_id = int(area.get_parent().name)
 		emit_signal('collided_with_another_player', other_player_id)
 

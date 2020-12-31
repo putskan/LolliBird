@@ -1,5 +1,6 @@
 extends Control
 
+var player_aligner_res = preload('res://src/Players/GamePlayerContainer.tscn')
 var dummy_bird_res = preload('res://src/Players/DummyPlayer.tscn')
 var player_bird_res = preload('res://src/Players/Player.tscn')
 var client_player_node
@@ -7,6 +8,7 @@ var PLAYER_POSITION_OFFSET = 20
 # last time server sent players states
 var latest_players_states_timestamp = null
 var players_ids_to_nodes = {}
+var name_labels = []
 onready var countdown_video_node = get_node('CountdownVideo')
 signal player_caught(catcher_pid, runner_pid)
 
@@ -33,6 +35,10 @@ func _on_CountdownVideo_finished():
 	# finished animation. can now hide it and start round!
 	countdown_video_node.visible = false
 	client_player_node.set_physics_process(true)
+	# hide name labels
+	for label in name_labels:
+		label.set_physics_process(true)
+	name_labels = []
 
 
 func init_all_players():
@@ -50,11 +56,12 @@ func init_all_players():
 					init_map_player(team_name, player_id, player_name)
 
 
-func init_map_player(team_name, player_id, _player_name):
+func init_map_player(team_name, player_id, player_name):
 	var player_node = create_player_node(team_name, player_id)
 	# for reduction of complexity in other functions (e.g., update_all_players_states)
 	players_ids_to_nodes[player_id] = player_node
-	align_player_node(player_node, team_name)
+	var aligner_node = align_player_node(player_node, team_name)
+	add_player_name_label(aligner_node, player_name, player_id)
 
 
 func clear_map_players():
@@ -72,8 +79,8 @@ func create_player_node(team_name, player_id):
 
 	else:
 		player_node = dummy_bird_res.instance()
-		player_node.get_node("AnimatedSprite").play(team_name)
-	
+		
+	player_node.get_node("AnimatedSprite").play(team_name)
 	player_node.name = str(player_id)
 	player_node = set_player_collision(player_node, team_name)
 	return player_node
@@ -105,19 +112,24 @@ func set_player_collision(player_node, team_name):
 
 
 func align_player_node(player_node, team_name):
-	var player_aligner = Control.new()
-	player_aligner.add_child(player_node)
+	# align player and return its aligner node
+	var player_aligner = player_aligner_res.instance()
+	player_aligner.get_node("VBoxContainer/CenterContainer/PlayerParent").add_child(player_node)
 	get_node("%sPlayers" % team_name).add_child(player_aligner)
-	if team_name == 'Team1':
-		player_node.position.x += PLAYER_POSITION_OFFSET
+	if team_name == 'Team2':
+		player_node.get_node('AnimatedSprite').flip_h = true
 	
-	elif team_name == 'Team2':
-		# align to right
-		player_node.position.x -= PLAYER_POSITION_OFFSET
-		player_aligner.set_h_size_flags(8)
-		# mirror player, so it flips sides
-		player_node.set_scale(Vector2(player_node.scale.x * -1, player_node.scale.y))
+	return player_aligner
 
+
+func add_player_name_label(aligner_node, player_name, player_id):
+	var name_label_node = aligner_node.get_node('VBoxContainer/PlayerName')
+	name_label_node.text = player_name
+	if player_id == Globals.player_id:
+		name_label_node.add_color_override("font_color", Color(0, 0.5, 0.5))
+		
+	name_labels.append(name_label_node)
+	
 
 func update_all_players_states(players_states):
 	if latest_players_states_timestamp == null or players_states['T'] > latest_players_states_timestamp:

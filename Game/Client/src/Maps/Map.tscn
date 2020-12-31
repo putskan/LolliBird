@@ -12,12 +12,12 @@ extents = Vector2( 10, 251.663 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 12, 261.406 )
 
-[sub_resource type="Gradient" id=5]
+[sub_resource type="Gradient" id=4]
 offsets = PoolRealArray( 0, 0.478571 )
 colors = PoolColorArray( 1, 1, 1, 1, 0, 0.505882, 0.411765, 1 )
 
-[sub_resource type="GradientTexture" id=6]
-gradient = SubResource( 5 )
+[sub_resource type="GradientTexture" id=5]
+gradient = SubResource( 4 )
 
 [node name="Map" type="NinePatchRect"]
 anchor_right = 1.0
@@ -29,10 +29,11 @@ __meta__ = {
 }
 
 [node name="Team1Players" type="VBoxContainer" parent="."]
+margin_left = 20.0
 margin_top = 20.0
-margin_right = 150.0
-margin_bottom = 480.0
-rect_min_size = Vector2( 150, 460 )
+margin_right = 140.0
+margin_bottom = 460.0
+rect_min_size = Vector2( 120, 440 )
 custom_constants/separation = 30
 __meta__ = {
 "_edit_use_anchors_": false
@@ -42,9 +43,11 @@ __meta__ = {
 anchor_left = 0.835
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 29.9601
 margin_top = 20.0
-margin_bottom = -20.0
-rect_min_size = Vector2( 150, 460 )
+margin_right = -18.9999
+margin_bottom = -30.0
+rect_min_size = Vector2( 120, 440 )
 custom_constants/separation = 30
 __meta__ = {
 "_edit_use_anchors_": false
@@ -96,7 +99,7 @@ shape = SubResource( 3 )
 modulate = Color( 1, 1, 1, 0.54902 )
 anchor_right = 1.0
 margin_bottom = 5.0
-texture = SubResource( 6 )
+texture = SubResource( 5 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false

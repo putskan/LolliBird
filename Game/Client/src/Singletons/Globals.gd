@@ -21,4 +21,4 @@ var is_host
 var catchers_team = 'Team1'
 var teams_players = null
 var captures = {}
-
+var small_dynamic_font_res = preload("res://src/UI/themes/main_font_small_size.tres")
