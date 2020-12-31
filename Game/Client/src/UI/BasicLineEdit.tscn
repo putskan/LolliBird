@@ -1,0 +1,12 @@
+[gd_scene format=2]
+
+[node name="BasicLineEdit" type="LineEdit"]
+margin_top = 37.0
+margin_right = 150.0
+margin_bottom = 72.0
+align = 1
+caret_blink = true
+caret_blink_speed = 0.55
+__meta__ = {
+"_edit_use_anchors_": false
+}

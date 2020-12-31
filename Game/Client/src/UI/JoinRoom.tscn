@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/UI/JoinRoom.gd" type="Script" id=1]
 [ext_resource path="res://src/UI/BasicButton1.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/UI/MenuBg.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/UI/themes/main_theme.tres" type="Theme" id=4]
+[ext_resource path="res://src/UI/BasicLineEdit.tscn" type="PackedScene" id=5]
 
 [node name="PlayerLogin" type="MarginContainer"]
 anchor_right = 1.0
@@ -10,6 +13,7 @@ margin_left = 50.0
 margin_top = 50.0
 margin_right = -50.0
 margin_bottom = -100.0
+theme = ExtResource( 4 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -21,34 +25,31 @@ margin_bottom = 450.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 387.0
-margin_top = 181.0
+margin_top = 169.0
 margin_right = 537.0
-margin_bottom = 269.0
+margin_bottom = 280.0
 size_flags_vertical = 3
 custom_constants/separation = 20
 alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
 margin_right = 150.0
-margin_bottom = 48.0
+margin_bottom = 64.0
 custom_constants/separation = 10
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer2"]
 margin_right = 150.0
-margin_bottom = 14.0
+margin_bottom = 27.0
 text = "Enter PIN"
 align = 1
 
-[node name="RoomIDInput" type="LineEdit" parent="CenterContainer/VBoxContainer/VBoxContainer2"]
-margin_top = 24.0
-margin_right = 150.0
-margin_bottom = 48.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="RoomIDInput" parent="CenterContainer/VBoxContainer/VBoxContainer2" instance=ExtResource( 5 )]
+margin_bottom = 64.0
 
 [node name="Join" parent="CenterContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 68.0
-margin_bottom = 88.0
+margin_top = 84.0
+margin_bottom = 111.0
 text = "Join"
+
+[node name="MenuBg" parent="." instance=ExtResource( 3 )]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Join" to="." method="_on_Join_pressed"]

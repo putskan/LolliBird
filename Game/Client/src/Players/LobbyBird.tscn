@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://src/Players/GenericPlayer.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Players/LobbyBird.gd" type="Script" id=2]
+[ext_resource path="res://assets/fonts/Bangers-Regular.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 15
+extra_spacing_char = 1
+font_data = ExtResource( 3 )
 
 [node name="LobbyBird" type="Control" groups=[
 "LobbyBirds",
@@ -42,7 +48,8 @@ z_index = 1
 [node name="PlayerName" type="Label" parent="VBoxContainer"]
 margin_top = 34.0
 margin_right = 101.0
-margin_bottom = 48.0
+margin_bottom = 51.0
+custom_fonts/font = SubResource( 1 )
 text = "PlayerName"
 align = 1
 __meta__ = {

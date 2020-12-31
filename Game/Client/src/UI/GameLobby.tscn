@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
+[ext_resource path="res://src/UI/themes/main_theme.tres" type="Theme" id=1]
 [ext_resource path="res://src/UI/GameLobby.gd" type="Script" id=2]
+[ext_resource path="res://src/UI/MenuBg.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/UI/LobbyBg.tscn" type="PackedScene" id=4]
 
 [node name="GameLobby" type="MarginContainer"]
 anchor_right = 1.0
@@ -9,6 +12,7 @@ margin_left = 50.0
 margin_top = 50.0
 margin_right = -50.0
 margin_bottom = -50.0
+theme = ExtResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -21,29 +25,27 @@ custom_constants/separation = 70
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 15.0
+margin_top = 11.0
 margin_right = 924.0
-margin_bottom = 35.0
+margin_bottom = 38.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="RoomID" type="RichTextLabel" parent="VBoxContainer/HBoxContainer"]
+[node name="RoomID" type="Label" parent="VBoxContainer/HBoxContainer"]
 margin_right = 150.0
-margin_bottom = 20.0
+margin_bottom = 27.0
 rect_min_size = Vector2( 150, 20 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "PIN: "
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="StartGame" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 154.0
-margin_right = 237.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 70, 20 )
+margin_right = 284.0
+margin_bottom = 27.0
+rect_min_size = Vector2( 130, 27 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Start Game"
@@ -52,16 +54,16 @@ __meta__ = {
 }
 
 [node name="Teams" type="VBoxContainer" parent="VBoxContainer"]
-margin_top = 105.0
+margin_top = 108.0
 margin_right = 924.0
-margin_bottom = 315.0
+margin_bottom = 318.0
 custom_constants/separation = 10
 
 [node name="Team1" type="ColorRect" parent="VBoxContainer/Teams"]
 margin_right = 924.0
 margin_bottom = 100.0
-rect_min_size = Vector2( 700, 100 )
-color = Color( 0.627451, 0, 0.443137, 1 )
+rect_min_size = Vector2( 924, 100 )
+color = Color( 0.777344, 0, 0.583008, 0.784314 )
 
 [node name="Team1Label" type="Label" parent="VBoxContainer/Teams/Team1"]
 margin_left = 5.0
@@ -72,10 +74,9 @@ __meta__ = {
 }
 
 [node name="BirdsContainer" type="HBoxContainer" parent="VBoxContainer/Teams/Team1"]
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = -50.0
+anchor_bottom = 0.5
 custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
@@ -85,12 +86,15 @@ __meta__ = {
 margin_top = 110.0
 margin_right = 924.0
 margin_bottom = 210.0
-rect_min_size = Vector2( 700, 100 )
-color = Color( 0, 0.262745, 0.886275, 1 )
+rect_min_size = Vector2( 924, 100 )
+color = Color( 0, 0.0743408, 0.679688, 0.784314 )
 
 [node name="Team2Label" type="Label" parent="VBoxContainer/Teams/Team2"]
 margin_left = 5.0
 margin_top = 5.0
+margin_right = 69.0
+margin_bottom = 62.0
+rect_min_size = Vector2( 60, 27 )
 text = "Team 2
 "
 __meta__ = {
@@ -98,21 +102,20 @@ __meta__ = {
 }
 
 [node name="BirdsContainer" type="HBoxContainer" parent="VBoxContainer/Teams/Team2"]
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = -50.0
+anchor_bottom = 0.5
 custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Unassigned" type="ColorRect" parent="VBoxContainer"]
-margin_top = 385.0
+margin_top = 388.0
 margin_right = 924.0
-margin_bottom = 485.0
-rect_min_size = Vector2( 700, 100 )
-color = Color( 0.109804, 0.109804, 0.109804, 1 )
+margin_bottom = 488.0
+rect_min_size = Vector2( 924, 100 )
+color = Color( 0, 0, 0, 0.784314 )
 
 [node name="UnassignedLabel" type="Label" parent="VBoxContainer/Unassigned"]
 margin_left = 5.0
@@ -126,14 +129,15 @@ __meta__ = {
 }
 
 [node name="BirdsContainer" type="HBoxContainer" parent="VBoxContainer/Unassigned"]
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 20.0
-margin_top = -50.0
-margin_right = -20.0
+anchor_bottom = 0.5
 custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="MenuBg" parent="." instance=ExtResource( 3 )]
+
+[node name="LobbyBg" parent="." instance=ExtResource( 4 )]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/StartGame" to="." method="_on_StartGame_pressed"]
