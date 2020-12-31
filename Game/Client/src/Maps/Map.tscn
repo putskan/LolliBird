@@ -1,6 +1,5 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://assets/maps/map_1.jpg" type="Texture" id=1]
 [ext_resource path="res://src/Maps/Map.gd" type="Script" id=2]
 [ext_resource path="res://src/UI/CountdownVideo.tscn" type="PackedScene" id=3]
 
@@ -13,11 +12,17 @@ extents = Vector2( 10, 251.663 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 12, 261.406 )
 
+[sub_resource type="Gradient" id=5]
+offsets = PoolRealArray( 0, 0.478571 )
+colors = PoolColorArray( 1, 1, 1, 1, 0, 0.505882, 0.411765, 1 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
+
 [node name="Map" type="NinePatchRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = -110.0
-texture = ExtResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -52,7 +57,7 @@ position = Vector2( 515.189, 484.923 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Borders"]
-position = Vector2( 510.458, 6.53902 )
+position = Vector2( 510.458, -4.46098 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Borders"]
@@ -86,4 +91,14 @@ shape = SubResource( 3 )
 modulate = Color( 0.32549, 0, 0, 1 )
 position = Vector2( 1017.26, 247.622 )
 shape = SubResource( 3 )
+
+[node name="HorizontalBreak" type="TextureRect" parent="."]
+modulate = Color( 1, 1, 1, 0.54902 )
+anchor_right = 1.0
+margin_bottom = 5.0
+texture = SubResource( 6 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="finished" from="CountdownVideo" to="." method="_on_CountdownVideo_finished"]

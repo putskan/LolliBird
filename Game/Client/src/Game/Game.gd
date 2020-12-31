@@ -1,6 +1,7 @@
 extends MarginContainer
 
 var scoreboard_player_label_name_pattern = 'ScoreboardLabel-%d'
+var small_dynamic_font_res = preload("res://src/UI/themes/main_font_small_size.tres")
 onready var start_round_button_node = find_node('StartRoundButton', true, false)
 onready var map_node = find_node('Map', true, false)
 onready var ui_round_number_node = get_node("VBoxContainer/UIPane/Control/RoundNumber")
@@ -106,6 +107,8 @@ func ui_init_players_scoreboard():
 			for pid in Globals.teams_players[team_name]:
 				var player_name = Globals.teams_players[team_name][pid]['player_name']
 				var player_label = Label.new()
+				var new_dyn_font = small_dynamic_font_res
+				player_label.add_font_override("font", new_dyn_font)
 				player_label.name = scoreboard_player_label_name_pattern % pid
 				player_label.text = '%s: 0' % player_name
 				parent_node.add_child(player_label)
