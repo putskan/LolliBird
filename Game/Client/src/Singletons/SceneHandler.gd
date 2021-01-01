@@ -13,6 +13,12 @@ func handle_scene_change(event):
 	
 	elif event == 'StartGameScene':
 		call_deferred('_deferred_change_scene', 'res://src/Game/Game.tscn')
+	
+	elif event == 'BackButtonPress':
+		call_deferred('_deferred_change_scene', 'res://src/UI/MainMenu.tscn')
+	
+	elif event == 'GameOver':
+		call_deferred('_deferred_change_scene', 'res://src/UI/GameOver.tscn')
 
 
 func _deferred_change_scene(new_scene_path):

@@ -4,6 +4,7 @@ var round_number = 1
 var total_rounds = 6
 
 var host_id
+var host_name
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
 var player_state_collection = {}
 
@@ -59,14 +60,6 @@ func update_player_state(player_id, player_state):
 		player_state_collection[player_id] = player_state
 
 
-func is_player_name_exists(player_name):
-	for team_players_dict in teams_players.values():
-		for player in team_players_dict:
-			if team_players_dict[player]['player_name'] == player_name:
-				return true
-	return false
-
-
 func add_player(player_attributes_dict, team):
 	# player_attributes_dict: {player_id: {'player_name': name, ...}}
 	for player_id in player_attributes_dict:
@@ -109,12 +102,13 @@ func remove_player(player_id):
 	
 	if player_id == host_id:
 		host_id = player_ids[0]
+		host_name = get_name_by_id(player_ids[0])
 		Server.assign_new_room_host(host_id)
+		Server.multicast_host_name(self)
 	
 	players_left_in_round.erase(player_id)
-	captures.erase(player_id)
 	player_state_collection.erase(player_id)
-	
+	captures.erase(player_id)
 	for capturer in captures:
 		captures[capturer].erase(player_id)
 		
@@ -123,6 +117,13 @@ func remove_player(player_id):
 		var players_in_team = teams_players[team]
 		if players_in_team.has(player_id):
 			players_in_team.erase(player_id)
+
+
+func get_name_by_id(player_id):
+	print(teams_players)
+	for team_name in teams_players:
+		if teams_players[team_name].has(player_id):
+			return teams_players[team_name][player_id]['player_name']
 
 
 func close_room():
@@ -168,11 +169,8 @@ func round_finish():
 	Server.multicast_round_finish(self)
 	var check_finish_data = check_game_finish()
 	if check_finish_data[0]:
-		Server.multicast_game_finish(check_finish_data[1], self)
-		print('Game Over! %s Has Won!' % check_finish_data[1])
-	else:
-		print('Game aint over until its over!')
-	
+		game_finish(check_finish_data[1])
+
 
 func check_game_finish():
 	# return [true, winning_team] if game finished, [false, null] otherwise
@@ -214,3 +212,17 @@ func get_captives():
 	for captive_list in captures.values():
 		all_captives += captive_list
 	return all_captives
+
+
+func game_finish(winning_team):
+	Server.multicast_game_finish(winning_team, self)
+	prepare_for_rematch()
+
+
+func prepare_for_rematch():
+	round_number = 1
+	player_state_collection = {}
+	teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
+	player_ids = []
+	captures = {}
+	players_left_in_round = []

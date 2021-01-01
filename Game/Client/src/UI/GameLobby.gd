@@ -3,8 +3,10 @@ onready var lobby_bird_resource = preload('res://src/Players/LobbyBird.tscn')
 onready var start_game_button = get_node("VBoxContainer/HBoxContainer/StartGame")
 
 func _ready():
+	
 	if Globals.is_host:
 		start_game_button.disabled = false
+
 	else:
 		start_game_button.disabled = true
 		

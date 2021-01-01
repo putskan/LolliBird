@@ -44,6 +44,16 @@ func assign_new_room_host(host_id):
 	rpc_id(host_id, 'assign_as_room_host')
 
 
+func multicast_host_name(room_node):
+	for pid in room_node.get_player_ids():
+		rpc_id(pid, 'receive_host_name', room_node.host_name)
+
+
+remote func unicast_host_name(room_id):
+	var room_node = HelperFunctions.get_room_node(room_id)
+	rpc_id(get_tree().get_rpc_sender_id(), 'receive_host_name', room_node.host_name)
+
+
 remote func is_room_id_exists(room_id):
 	# check if there's an open room with "room_id" and send back the info to the client
 	rpc_id(get_tree().get_rpc_sender_id(), 'response_room_id_join_validation', room_id in Globals.running_rooms_ids)
@@ -55,9 +65,15 @@ remote func create_room():
 	rpc_id(player_id, 'response_room_creation', int(room.name))
 
 
-remote func create_player(player_name, room_id):
+remote func close_room(room_id):
+	var room_node = HelperFunctions.get_room_node(room_id)
+	if get_tree().get_rpc_sender_id() == room_node.host_id:
+		room_node.close_room()
+
+
+remote func create_player(player_name, player_team, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
-	var error_message = HelperFunctions.create_player(get_tree().get_rpc_sender_id(), player_name, room_id)
+	var error_message = HelperFunctions.create_player(get_tree().get_rpc_sender_id(), player_name, player_team, room_id)
 	rpc_id(player_id, 'response_player_creation', error_message)
 	# update 
 	if not error_message:
@@ -67,7 +83,7 @@ remote func create_player(player_name, room_id):
 		var room_node = HelperFunctions.get_room_node(room_id)
 		var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
 		for pid in pids:
-			rpc_id(pid, 'add_team_player', 'Unassigned', player_id, {'player_name': player_name})
+			rpc_id(pid, 'add_team_player', player_team, player_id, {'player_name': player_name})
 
 
 remote func multicast_change_team_of_player(old_team_name, new_team_name, player_id, room_id):

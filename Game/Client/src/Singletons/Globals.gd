@@ -9,16 +9,18 @@ const UNASSIGNED_TEAM_NOTATION = 'Unassigned'
 const CATCHERS_COLLISION_BIT = 1
 const RUNNERS_COLLISION_BIT = 2
 const END_OF_MAP_COLLISION_BIT = 3
-
-# player related
-var round_number = 1
-var total_rounds = 6
+var small_dynamic_font_res = preload("res://src/UI/themes/main_font_small_size.tres")
 var player_id
+
+# first assigned in HelperFunctions:
+var round_number
+var total_rounds
 var player_name
-var player_team = 'Unassigned'
+var player_team
 var room_id
 var is_host
-var catchers_team = 'Team1'
-var teams_players = null
-var captures = {}
-var small_dynamic_font_res = preload("res://src/UI/themes/main_font_small_size.tres")
+var host_name
+var catchers_team
+var teams_players
+var captures
+var team_won

@@ -21,16 +21,8 @@ func _on_Create_pressed():
 		return
 		
 	button_node.disabled = true
+	Globals.player_name = player_name
 	Server.request_player_creation(player_name, Globals.room_id)
-
-
-func handle_player_creation_response(error_msg):
-	if error_msg:
-		handle_input_error(error_msg)
-		
-	else:
-		Globals.player_name = player_name
-		SceneHandler.handle_scene_change('GoToLobby')
 
 
 func handle_input_error(error_msg):
@@ -46,4 +38,10 @@ func is_string_english(s):
 	if not result or result.get_string() != s:
 		return false
 	return true
+
+
+func _on_BackButton_pressed():
+	# clear room resources if needed
+	if Globals.is_host:
+		Server.request_room_close(Globals.room_id)
 

@@ -169,13 +169,6 @@ func ui_update_round_number():
 
 func _on_game_finish(winning_team):
 	start_round_button_node.disabled = true
-	var game_over_pop_up = get_node('GameOverPopup')
-	var pop_up_label = game_over_pop_up.get_node("GameOverText")
-	if winning_team == 'Draw':
-		pop_up_label.text = '%s!' % winning_team
-		
-	else:
-		pop_up_label.text = '%s won!' % winning_team
-	game_over_pop_up.popup()
-	print('Client: %s won' % winning_team)
-	
+	Globals.team_won = winning_team
+	SceneHandler.handle_scene_change('GameOver')
+

@@ -1,6 +1,8 @@
 extends MarginContainer
 
-
+func _ready():
+	HelperFunctions.init_globals()
+	
 func _on_CreateGame_pressed():
 	_disable_buttons()
 	Server.request_room_creation()

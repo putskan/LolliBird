@@ -143,7 +143,7 @@ func add_player_name_label(aligner_node, player_name, player_id):
 		name_label_node.add_color_override("font_color", Color(0, 0.5, 0.5))
 		
 	name_labels.append(name_label_node)
-	
+
 
 func update_all_players_states(players_states):
 	if latest_players_states_timestamp == null or players_states['T'] > latest_players_states_timestamp:

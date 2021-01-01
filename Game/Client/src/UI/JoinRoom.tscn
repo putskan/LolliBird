@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/UI/JoinRoom.gd" type="Script" id=1]
 [ext_resource path="res://src/UI/BasicButton1.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/UI/MenuBg.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/UI/themes/main_theme.tres" type="Theme" id=4]
 [ext_resource path="res://src/UI/BasicLineEdit.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/UI/BackButton.tscn" type="PackedScene" id=6]
 
-[node name="PlayerLogin" type="MarginContainer"]
+[node name="JoinRoom" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 50.0
@@ -25,9 +26,9 @@ margin_bottom = 450.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 387.0
-margin_top = 146.0
+margin_top = 132.0
 margin_right = 537.0
-margin_bottom = 304.0
+margin_bottom = 317.0
 size_flags_vertical = 3
 custom_constants/separation = 20
 alignment = 1
@@ -38,33 +39,41 @@ margin_bottom = 64.0
 custom_constants/separation = 10
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer2"]
-margin_top = -1.0
 margin_right = 150.0
-margin_bottom = 26.0
+margin_bottom = 27.0
 rect_min_size = Vector2( 150, 27 )
 text = "Enter PIN"
 align = 1
 
 [node name="RoomIDInput" parent="CenterContainer/VBoxContainer/VBoxContainer2" instance=ExtResource( 5 )]
-margin_top = 36.0
-margin_bottom = 63.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Join" parent="CenterContainer/VBoxContainer" instance=ExtResource( 2 )]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
 margin_top = 84.0
-margin_bottom = 111.0
+margin_right = 150.0
+margin_bottom = 185.0
+rect_min_size = Vector2( 0, 80 )
+custom_constants/separation = 10
+
+[node name="Join" parent="CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource( 2 )]
+margin_bottom = 27.0
 rect_min_size = Vector2( 150, 27 )
 size_flags_horizontal = 4
 text = "Join"
 
-[node name="ErrorMsg" type="Label" parent="CenterContainer/VBoxContainer"]
-margin_top = 131.0
+[node name="BackButton" parent="CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource( 6 )]
+margin_top = 37.0
+margin_bottom = 64.0
+size_flags_horizontal = 4
+
+[node name="ErrorMsg" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+margin_top = 74.0
 margin_right = 150.0
-margin_bottom = 158.0
+margin_bottom = 101.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MenuBg" parent="." instance=ExtResource( 3 )]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Join" to="." method="_on_Join_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxContainer/Join" to="." method="_on_Join_pressed"]

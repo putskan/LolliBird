@@ -24,6 +24,7 @@ config/icon="res://icon.png"
 Server="*res://src/Singletons/Server.gd"
 SceneHandler="*res://src/Singletons/SceneHandler.gd"
 Globals="*res://src/Singletons/Globals.gd"
+HelperFunctions="*res://HelperFunctions.gd"
 
 [display]
 

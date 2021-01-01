@@ -1,0 +1,10 @@
+[gd_scene format=2]
+
+[node name="RoomHost" type="Label"]
+margin_top = 31.0
+margin_right = 282.0
+margin_bottom = 58.0
+text = "Host: "
+__meta__ = {
+"_edit_use_anchors_": false
+}

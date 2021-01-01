@@ -7,6 +7,7 @@ var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
 signal player_disconnect(player_id)
 signal init_teams_players
 signal assign_as_room_host
+signal receive_host_name(host_name)
 signal change_team_of_player_sig(team_name, player_id)
 signal add_team_player(team_name, player_id, player_attributes)
 signal start_game
@@ -71,20 +72,33 @@ func request_room_creation():
 	rpc_id(1, 'create_room')
 
 
+func request_room_close(room_id):
+	rpc_id(1, 'close_room', room_id)
+
+
 remote func response_room_creation(room_id):
 	Globals.room_id = room_id
 	assign_as_room_host()
 
 
-func request_player_creation(player_name, room_id):
+func request_host_name():
+	rpc_id(1, 'unicast_host_name', Globals.room_id)
+	
+	
+remote func receive_host_name(host_name):
+	Globals.host_name = host_name
+	emit_signal('receive_host_name', host_name)
+
+
+func request_player_creation(player_name, room_id, player_team='Unassigned'):
 	# request server to create the player
-	rpc_id(1, 'create_player', player_name, room_id)
+	rpc_id(1, 'create_player', player_name, player_team, room_id)
 
 
-remote func response_player_creation(error_message):
+remote func response_player_creation(_error_message):
 	# error_message: str if error occurred in serverside's player creation, null otherwise
 	# current scene should be UserPrefs
-	get_tree().get_current_scene().handle_player_creation_response(error_message)
+	SceneHandler.handle_scene_change('GoToLobby')
 
 
 remote func init_teams_players(teams_players_data):
@@ -126,6 +140,8 @@ remote func start_game():
 remote func assign_as_room_host():
 	emit_signal('assign_as_room_host')
 	Globals.is_host = true
+	if Globals.player_name:
+		Globals.host_name = Globals.player_name
 
 
 func send_player_state(player_state):
