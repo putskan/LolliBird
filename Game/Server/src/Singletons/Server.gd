@@ -31,13 +31,13 @@ func _peer_connected(player_id):
 func _peer_disconnected(player_id):
 	print("User %s Disconnected!" % player_id)
 	for room_node in Globals.running_rooms_node.get_children():
-		# may be true, or null if room is closing
-		if room_node.remove_player(player_id) != false:
-			# notify room players of deletion, if player removed & room not closed
+		if room_node.is_player_in_room(player_id):
+			room_node.remove_player(player_id)
+			# if room not closed - notify room players of deletion
 			if room_node:
-				for pid in room_node.get_player_ids(get_tree().get_rpc_sender_id()):
-					rpc_id(pid, 'update_players_data', {player_id: null}, true)
-			break
+				for pid in room_node.get_player_ids():
+					rpc_id(pid, 'receive_player_disconnect', player_id)
+			return
 
 
 func assign_new_room_host(host_id):

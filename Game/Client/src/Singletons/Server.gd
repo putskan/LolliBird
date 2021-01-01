@@ -4,9 +4,9 @@ const IP_ADDRESS = "127.0.0.1"
 const PORT = 11111
 var network = WebSocketClient.new()
 var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
-# signal response_received_team_names_to_players_names(result)
-# signal peer_list_updated
+signal player_disconnect(player_id)
 signal init_teams_players
+signal assign_as_room_host
 signal change_team_of_player_sig(team_name, player_id)
 signal add_team_player(team_name, player_id, player_attributes)
 signal start_game
@@ -15,6 +15,7 @@ signal round_finish
 signal receive_players_states(players_states)
 signal player_caught(catcher_pid, runner_pid)
 signal game_finish(winning_team)
+
 
 func _ready():
 	connect_to_server()
@@ -42,6 +43,15 @@ func _on_connection_succeeded():
 	Globals.player_id = get_tree().get_network_unique_id()
 	print('succesfully connected')
 
+
+remote func receive_player_disconnect(player_id):
+	for team in Globals.teams_players:
+		var players_in_team = Globals.teams_players[team]
+		if players_in_team.has(player_id):
+			players_in_team.erase(player_id)
+			
+	emit_signal('player_disconnect', player_id)
+	
 
 func request_room_id_join_validation(room_id):
 	# send room id to server for validation that the room exists
@@ -114,6 +124,7 @@ remote func start_game():
 
 
 remote func assign_as_room_host():
+	emit_signal('assign_as_room_host')
 	Globals.is_host = true
 
 

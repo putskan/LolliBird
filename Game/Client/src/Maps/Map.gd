@@ -4,7 +4,6 @@ var player_aligner_res = preload('res://src/Players/GamePlayerContainer.tscn')
 var dummy_bird_res = preload('res://src/Players/DummyPlayer.tscn')
 var player_bird_res = preload('res://src/Players/Player.tscn')
 var client_player_node
-var PLAYER_POSITION_OFFSET = 20
 # last time server sent players states
 var latest_players_states_timestamp = null
 var players_ids_to_nodes = {}
@@ -15,6 +14,7 @@ signal player_caught(catcher_pid, runner_pid)
 
 func _ready():
 	init_all_players()
+	Server.connect('player_disconnect', self, '_on_player_disconnect')
 	Server.connect('receive_players_states', self, 'update_all_players_states')
 	yield(get_tree(),"idle_frame")
 	var game_node = get_tree().get_current_scene()
@@ -22,10 +22,17 @@ func _ready():
 	game_node.connect('game_round_finish', self, '_on_game_round_finish')
 
 
+func _on_player_disconnect(player_id):
+	# clear player node. the container will be flushed in the next round.
+	if players_ids_to_nodes.has(player_id):
+		players_ids_to_nodes[player_id].queue_free()
+		players_ids_to_nodes.erase(player_id)
+
+
 func _on_game_round_start():
-	# in the future: add countdown
 	countdown_video_node.visible = true
 	countdown_video_node.play()
+
 
 func _on_game_round_finish():
 	init_all_players()
@@ -34,7 +41,10 @@ func _on_game_round_finish():
 func _on_CountdownVideo_finished():
 	# finished animation. can now hide it and start round!
 	countdown_video_node.visible = false
-	client_player_node.set_physics_process(true)
+	if client_player_node:
+		# i.e., not a spectator
+		client_player_node.set_physics_process(true)
+		
 	# hide name labels
 	for label in name_labels:
 		label.set_physics_process(true)
@@ -65,9 +75,13 @@ func init_map_player(team_name, player_id, player_name):
 
 
 func clear_map_players():
-	for player_node in players_ids_to_nodes.values():
-		player_node.queue_free()
+	for team_name in ['Team1', 'Team2']:
+		var team_players_container = get_node("%sPlayers" % team_name)
+		for player_container in team_players_container.get_children():
+			player_container.queue_free()
+		
 	players_ids_to_nodes = {}
+
 
 
 func create_player_node(team_name, player_id):

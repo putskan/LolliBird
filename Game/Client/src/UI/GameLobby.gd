@@ -1,10 +1,16 @@
 extends MarginContainer
 onready var lobby_bird_resource = preload('res://src/Players/LobbyBird.tscn')
-
+onready var start_game_button = get_node("VBoxContainer/HBoxContainer/StartGame")
 
 func _ready():
-	# Server.request_lobby_entry_sync()
+	if Globals.is_host:
+		start_game_button.disabled = false
+	else:
+		start_game_button.disabled = true
+		
 	get_node("VBoxContainer/HBoxContainer/RoomID").text += str(Globals.room_id)
+	Server.connect('player_disconnect', self, 'remove_player_from_lobby')
+	Server.connect('assign_as_room_host', self, '_on_assign_as_room_host')
 	Server.connect('add_team_player', self, '_add_team_player')
 	Server.connect('change_team_of_player_sig', self, 'change_player_team')
 	Server.connect('start_game', self, 'start_game')
@@ -13,6 +19,10 @@ func _ready():
 		init_lobby_players()
 	else:
 		Server.connect('init_teams_players', self, 'init_lobby_players')
+
+
+func _on_assign_as_room_host():
+	start_game_button.disabled = false
 
 
 func init_lobby_players():
@@ -37,7 +47,6 @@ func _add_team_player(team_name, player_id, player_attributes):
 
 
 func remove_player_from_lobby(player_id):
-	### call on disconnection
 	find_node(str(player_id), true, false).queue_free()
 
 
@@ -49,6 +58,7 @@ func change_player_team(_old_team_name, new_team_name, player_id):
 
 func _on_StartGame_pressed():
 	Server.request_start_game()
+	start_game_button.disabled = true
 
 
 func start_game():

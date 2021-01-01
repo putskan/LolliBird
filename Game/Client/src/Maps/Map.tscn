@@ -34,7 +34,8 @@ margin_top = 20.0
 margin_right = 140.0
 margin_bottom = 460.0
 rect_min_size = Vector2( 120, 440 )
-custom_constants/separation = 30
+custom_constants/separation = 20
+alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -48,7 +49,8 @@ margin_top = 20.0
 margin_right = -18.9999
 margin_bottom = -30.0
 rect_min_size = Vector2( 120, 440 )
-custom_constants/separation = 30
+custom_constants/separation = 20
+alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }

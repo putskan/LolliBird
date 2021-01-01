@@ -17,7 +17,7 @@ teams_players = {
 var teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
 var player_ids = []
 var captures = {}
-var players_left_in_round
+var players_left_in_round = []
 
 
 func _ready():
@@ -96,32 +96,33 @@ func update_player_team(player_id, team_name):
 	return false
 
 
+func is_player_in_room(player_id):
+	return player_ids.has(player_id)
+
+
 func remove_player(player_id):
-	# remove player from ids, states, teams
-	# assign new host if needed
-	# close room if needed
-	# return: false if player not found, true if deleted, null if room closed
-	if not player_ids.has(player_id):
-		return false
-		
+	# delete player from everywhere
 	player_ids.erase(player_id)
 	if player_ids.empty():
 		close_room()
 		return
-
-	player_state_collection.erase(player_id)
+	
 	if player_id == host_id:
 		host_id = player_ids[0]
 		Server.assign_new_room_host(host_id)
 	
+	players_left_in_round.erase(player_id)
+	captures.erase(player_id)
+	player_state_collection.erase(player_id)
+	
+	for capturer in captures:
+		captures[capturer].erase(player_id)
+		
 	# remove from teams_players
 	for team in teams_players:
 		var players_in_team = teams_players[team]
 		if players_in_team.has(player_id):
 			players_in_team.erase(player_id)
-			return true
-	
-	push_error('Room %s: Player %d removal - found in ids, not in teams!' % [self.name, player_id])
 
 
 func close_room():
