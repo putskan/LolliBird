@@ -2,7 +2,6 @@
 
 [ext_resource path="res://src/Maps/Map.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Game/Game.gd" type="Script" id=2]
-[ext_resource path="res://src/UI/GameOverPopup.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/UI/LobbyBg.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/UI/themes/main_theme.tres" type="Theme" id=5]
 [ext_resource path="res://src/UI/RoomHostLabel.tscn" type="PackedScene" id=6]
@@ -126,12 +125,3 @@ margin_top = 104.0
 margin_right = 1024.0
 margin_bottom = 594.0
 rect_min_size = Vector2( 1024, 490 )
-
-[node name="GameOverPopup" parent="." instance=ExtResource( 3 )]
-margin_left = 412.0
-margin_top = 247.0
-margin_right = 612.0
-margin_bottom = 347.0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-[connection signal="pressed" from="VBoxContainer/UIPane/Control2/StartRoundButton" to="." method="_on_StartRoundButton_pressed"]

@@ -22,6 +22,7 @@ func handle_scene_change(event):
 
 
 func _deferred_change_scene(new_scene_path):
+	print(new_scene_path)
 	var root = get_tree().get_root()
 	var current_scene = root.get_child(root.get_child_count() - 1)
 	current_scene.free()

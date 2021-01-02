@@ -162,7 +162,6 @@ func on_player_finished_round(pid):
 
 
 func round_finish():
-	print('Round finished!')
 	round_number += 1
 	player_state_collection = {}
 	set_physics_process(false)
