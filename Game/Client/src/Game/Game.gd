@@ -106,10 +106,13 @@ func handle_capture_data(catcher_pid, runner_pid):
 
 
 func save_capture_data(catcher_pid, runner_pid):
+	# capture
 	if not Globals.captures.has(catcher_pid):
 		Globals.captures[catcher_pid] = [runner_pid]
 	else:
 		Globals.captures[catcher_pid].append(runner_pid)
+	# release
+	Globals.captures.erase(runner_pid)
 
 
 func get_player_scoreboard_label(player_id):
