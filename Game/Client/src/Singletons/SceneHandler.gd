@@ -7,7 +7,6 @@ func handle_scene_change(event):
 	elif event == 'get_player_prefs':
 		call_deferred('_deferred_change_scene', 'res://src/UI/UserPrefs.tscn')
 		
-	# after choosing nickname and such
 	elif event == 'GoToLobby':
 		call_deferred('_deferred_change_scene', 'res://src/UI/GameLobby.tscn')
 	
@@ -22,7 +21,6 @@ func handle_scene_change(event):
 
 
 func _deferred_change_scene(new_scene_path):
-	print(new_scene_path)
 	var root = get_tree().get_root()
 	var current_scene = root.get_child(root.get_child_count() - 1)
 	current_scene.free()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/Maps/Map.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Game/Game.gd" type="Script" id=2]
@@ -125,3 +125,4 @@ margin_top = 104.0
 margin_right = 1024.0
 margin_bottom = 594.0
 rect_min_size = Vector2( 1024, 490 )
+[connection signal="pressed" from="VBoxContainer/UIPane/Control2/StartRoundButton" to="." method="_on_StartRoundButton_pressed"]

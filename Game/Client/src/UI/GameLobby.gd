@@ -3,7 +3,6 @@ onready var lobby_bird_resource = preload('res://src/Players/LobbyBird.tscn')
 onready var start_game_button = get_node("VBoxContainer/HBoxContainer/StartGame")
 
 func _ready():
-	
 	if Globals.is_host:
 		start_game_button.disabled = false
 
@@ -16,6 +15,7 @@ func _ready():
 	Server.connect('add_team_player', self, '_add_team_player')
 	Server.connect('change_team_of_player_sig', self, 'change_player_team')
 	Server.connect('start_game', self, 'start_game')
+	Server.connect('receive_response_start_game', self, '_on_receive_response_start_game')
 	# if already got players info, start aligning. else, register for a signal
 	if Globals.teams_players:
 		init_lobby_players()
@@ -58,10 +58,19 @@ func change_player_team(_old_team_name, new_team_name, player_id):
 	add_player_to_lobby(new_team_name, player_id, player_name)
 
 
+func is_team_full(team_node):
+	var max_players = Globals.TEAMS_MAX_PLAYERS[team_node.name]
+	var players_count = team_node.get_node('BirdsContainer').get_child_count()
+	return players_count >= max_players
+
+
 func _on_StartGame_pressed():
 	Server.request_start_game()
 	start_game_button.disabled = true
 
+func _on_receive_response_start_game(error_msg):
+	if error_msg:
+		start_game_button.disabled = false
 
 func start_game():
 	SceneHandler.handle_scene_change('StartGameScene')

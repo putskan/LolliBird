@@ -13,6 +13,7 @@ signal player_caught(catcher_pid, runner_pid)
 
 
 func _ready():
+	set_physics_process(false)
 	init_all_players()
 	Server.connect('player_disconnect', self, '_on_player_disconnect')
 	Server.connect('receive_players_states', self, 'update_all_players_states')
@@ -20,6 +21,15 @@ func _ready():
 	var game_node = get_tree().get_current_scene()
 	game_node.connect('game_round_start', self, '_on_game_round_start')
 	game_node.connect('game_round_finish', self, '_on_game_round_finish')
+
+
+func _physics_process(_delta):
+	# used for off-tab browser sync purposes
+	# if another client started the game, stop the countdown and start game as well
+	if latest_players_states_timestamp:
+		print(latest_players_states_timestamp)
+		_on_CountdownVideo_finished()
+		set_physics_process(false)
 
 
 func _on_player_disconnect(player_id):
@@ -30,8 +40,10 @@ func _on_player_disconnect(player_id):
 
 
 func _on_game_round_start():
+	print('Map: Received Signal')
 	countdown_video_node.visible = true
 	countdown_video_node.play()
+	set_physics_process(true)
 
 
 func _on_game_round_finish():
@@ -75,6 +87,7 @@ func init_map_player(team_name, player_id, player_name):
 
 
 func clear_map_players():
+	latest_players_states_timestamp = null
 	for team_name in ['Team1', 'Team2']:
 		var team_players_container = get_node("%sPlayers" % team_name)
 		for player_container in team_players_container.get_children():
@@ -146,6 +159,9 @@ func add_player_name_label(aligner_node, player_name, player_id):
 
 
 func update_all_players_states(players_states):
+	if players_states.size() <= 1:
+		return
+	
 	if latest_players_states_timestamp == null or players_states['T'] > latest_players_states_timestamp:
 		# new data received
 		latest_players_states_timestamp = players_states['T']
@@ -156,7 +172,7 @@ func update_all_players_states(players_states):
 				# if not eliminated
 				var new_position = players_states[player_id]['P']
 				players_ids_to_nodes[player_id].set_global_position(new_position)
-
+	
 
 func handle_players_collision(other_player_id):
 	if is_player_caught_on_collision():

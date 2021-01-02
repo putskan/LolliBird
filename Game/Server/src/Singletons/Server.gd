@@ -54,9 +54,16 @@ remote func unicast_host_name(room_id):
 	rpc_id(get_tree().get_rpc_sender_id(), 'receive_host_name', room_node.host_name)
 
 
-remote func is_room_id_exists(room_id):
-	# check if there's an open room with "room_id" and send back the info to the client
-	rpc_id(get_tree().get_rpc_sender_id(), 'response_room_id_join_validation', room_id in Globals.running_rooms_ids)
+remote func is_room_join_valid(room_id):
+	# check if there's an open room with "room_id" & not full
+	# response with null if all good, error message otherwise
+	var error_msg = null
+	if not room_id in Globals.running_rooms_ids:
+		error_msg = 'Error: Wrong PIN Entered'
+	elif HelperFunctions.get_room_node(room_id).player_ids.size() >= Globals.ROOM_MAX_PLAYERS:
+		error_msg = 'Error: Room is full'
+		
+	rpc_id(get_tree().get_rpc_sender_id(), 'response_room_id_join_validation', error_msg)
 
 
 remote func create_room():
@@ -132,11 +139,14 @@ remote func get_team_names_to_player_names(room_id):
 remote func start_game(room_id):
 	# notify all other room players & start running
 	var room_node = HelperFunctions.get_room_node(room_id)
-	var pids = room_node.get_player_ids()
-	for pid in pids:
-		rpc_id(pid, 'start_game')
+	if room_node.teams_players['Team1'].size() >= 1 and room_node.teams_players['Team2'].size() >= 1:
+		var pids = room_node.get_player_ids()
+		for pid in pids:
+			rpc_id(pid, 'start_game')
+	else:
+		rpc_id(get_tree().get_rpc_sender_id(), 'response_start_game', 'Error: assign players to teams')
 	# HelperFunctions.get_room_node(room_id).set_physics_process(true)
-
+	
 
 remote func receive_player_state(player_state, room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)

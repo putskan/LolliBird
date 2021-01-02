@@ -4,13 +4,13 @@ var room_id = null
 onready var join_button = get_node("CenterContainer/VBoxContainer/VBoxContainer/Join")
 onready var error_label = get_node("CenterContainer/VBoxContainer/VBoxContainer/ErrorMsg")
 
-func handle_join_response(is_room_id_valid):
-		if is_room_id_valid:
+func handle_join_response(error_msg):
+		if not error_msg:
 			Globals.room_id = room_id
 			SceneHandler.handle_scene_change('get_player_prefs')
 		
 		else:
-			handle_input_error('Error: Wrong PIN Entered')
+			handle_input_error(error_msg)
 
 
 func handle_input_error(error_msg):

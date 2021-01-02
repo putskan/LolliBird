@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Agile - Server"
+config/name="LolliBird - Server"
 run/main_scene="res://src/Singletons/RunningRooms.tscn"
 config/icon="res://icon.png"
 

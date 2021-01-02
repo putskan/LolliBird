@@ -29,10 +29,9 @@ func drag_lobby_bird(event):
 			var team_name_to_move_to = current_team_name
 			for team_node in teams_rect_nodes:
 				# check if a valid place to move to
-				if team_node.name != team_name_to_move_to and is_control_inside_control(self.get_node("VBoxContainer/CenterContainer/Control"), team_node):
+				if team_node.name != team_name_to_move_to and is_control_inside_control(self.get_node("VBoxContainer/CenterContainer/Control"), team_node) and not current_scene.is_team_full(team_node):
 					team_name_to_move_to = team_node.name
 					# notify the server of a bird move
-					### Server.multicast_lobby_bird_move(bird_name, team_name_to_move_to)
 					Server.change_team_of_player(current_team_name, team_name_to_move_to, player_id)
 					Server.multicast_change_team_of_player(current_team_name, team_name_to_move_to, player_id)
 					return

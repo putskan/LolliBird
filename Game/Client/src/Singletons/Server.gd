@@ -16,7 +16,7 @@ signal round_finish
 signal receive_players_states(players_states)
 signal player_caught(catcher_pid, runner_pid)
 signal game_finish(winning_team)
-
+signal receive_response_start_game(error_msg)
 
 func _ready():
 	connect_to_server()
@@ -55,17 +55,16 @@ remote func receive_player_disconnect(player_id):
 	
 
 func request_room_id_join_validation(room_id):
-	# send room id to server for validation that the room exists
+	# send room id to server for validation that room exists/not full, etc.
 	# called from JoinRoom
 	print('Client: verifying room id: %d' % room_id)
-	rpc_id(1, 'is_room_id_exists', room_id)
+	rpc_id(1, 'is_room_join_valid', room_id)
 
 
-remote func response_room_id_join_validation(is_room_id_valid):
+remote func response_room_id_join_validation(error_msg):
 	# response from the server 
 	# current_scene should be JoinRoom
-	print('room id valid? %s' % is_room_id_valid)
-	get_tree().get_current_scene().handle_join_response(is_room_id_valid)
+	get_tree().get_current_scene().handle_join_response(error_msg)
 
 
 func request_room_creation():
@@ -133,6 +132,11 @@ func request_start_game():
 	rpc_id(1, 'start_game', Globals.room_id)
 
 
+remote func response_start_game(error_msg=null):
+	emit_signal('receive_response_start_game', error_msg)
+	# call from server
+
+
 remote func start_game():
 	emit_signal('start_game')
 
@@ -159,6 +163,8 @@ func request_round_start():
 
 
 remote func round_start():
+	Globals.first_round_start = true
+	print('Server: %s' % Globals.first_round_start)
 	emit_signal('round_start')
 
 

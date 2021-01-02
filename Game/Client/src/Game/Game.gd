@@ -14,11 +14,18 @@ signal game_round_start
 signal game_round_finish
 
 func _ready():
+	if Globals.first_round_start:
+		# make sure map scene has loaded and connected to game signals
+		yield(get_tree(),"idle_frame")
+		yield(get_tree(),"idle_frame")
+		_on_round_start()
+		
 	if Globals.is_host:
 		start_round_button_node.disabled = false
 		
 	else:
 		start_round_button_node.disabled = true
+		
 	Server.connect('player_disconnect', self, '_on_player_disconnect')
 	Server.connect('assign_as_room_host', self, '_on_assign_as_room_host')
 	Server.connect('round_start', self, '_on_round_start')

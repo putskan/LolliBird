@@ -12,6 +12,7 @@ func init_globals():
 	Globals.teams_players = null
 	Globals.captures = {}
 	Globals.team_won = null
+	Globals.first_round_start = false
 
 
 func prepare_for_rematch():
@@ -20,3 +21,4 @@ func prepare_for_rematch():
 	Globals.captures = {}
 	Globals.team_won = null
 	Globals.teams_players = null
+	Globals.first_round_start = false
