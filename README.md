@@ -1,2 +1,2 @@
-# Agile
-2D Multiplayer Game
+# LolliBird
+2D Web Multiplayer Game
