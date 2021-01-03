@@ -9,15 +9,15 @@ onready var input_node = get_node("CenterContainer/VBoxContainer/VBoxContainer/N
 func _on_Create_pressed():
 	player_name = input_node.text
 	if player_name == '':
-		handle_input_error('Please Enter A Valid Name')
+		handle_error('Please Enter A Valid Name')
 		return
 
 	if player_name.length() >= 8:
-		handle_input_error('Name Too Long')
+		handle_error('Name Too Long')
 		return
 		
 	if not is_string_english(player_name):
-		handle_input_error('Please use English characters')
+		handle_error('Please use English characters')
 		return
 		
 	button_node.disabled = true
@@ -25,7 +25,7 @@ func _on_Create_pressed():
 	Server.request_player_creation(player_name, Globals.room_id)
 
 
-func handle_input_error(error_msg):
+func handle_error(error_msg):
 	input_node.text = ''
 	button_node.disabled = false
 	error_label.text = error_msg

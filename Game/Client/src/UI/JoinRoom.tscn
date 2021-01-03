@@ -65,7 +65,6 @@ text = "Join"
 [node name="BackButton" parent="CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource( 6 )]
 margin_top = 37.0
 margin_bottom = 64.0
-size_flags_horizontal = 4
 
 [node name="ErrorMsg" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
 margin_top = 74.0

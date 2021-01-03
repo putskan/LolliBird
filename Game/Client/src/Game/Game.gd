@@ -31,8 +31,8 @@ func _ready():
 	Server.connect('round_start', self, '_on_round_start')
 	Server.connect('round_finish', self, '_on_round_finish')
 	Server.connect('game_finish', self, '_on_game_finish')
-	Server.connect('player_caught', self, '_on_player_caught')
-	map_node.connect('player_caught', self, '_on_player_caught')
+	Server.connect('player_caught', self, '_on_player_caught_remotely')
+	map_node.connect('player_caught', self, '_on_player_caught_locally')
 
 	ui_init_players_scoreboard()
 	ui_update_round_number()
@@ -88,16 +88,17 @@ func ui_update_catchers_team():
 	get_node("VBoxContainer/UIPane/Control/RoundCatcher").text = 'Catcher: %s' % Globals.catchers_team
 
 
-func _on_player_caught(catcher_pid, runner_pid):
-	if runner_pid == Globals.player_id:
-		# received from map scene (becuase own player was eliminated)
-		Server.multicast_player_caught(catcher_pid, runner_pid)
-		
-	else:
-		var runner_node = map_node.find_node(str(runner_pid), true, false)
-		map_node.eliminate_player(runner_node)
-
+func _on_player_caught_locally(catcher_pid, runner_pid):
+	Server.multicast_player_caught(catcher_pid, runner_pid)
 	handle_capture_data(catcher_pid, runner_pid)
+
+
+func _on_player_caught_remotely(catcher_pid, runner_pid):
+	var runner_node = map_node.get_player_node_by_id(runner_pid)
+	if runner_node:
+		# if not eliminated locally already
+		map_node.eliminate_player(runner_node)
+		handle_capture_data(catcher_pid, runner_pid)
 
 
 func handle_capture_data(catcher_pid, runner_pid):

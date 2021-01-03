@@ -7,9 +7,6 @@
 light_mask = -2147483647
 script = ExtResource( 5 )
 
-[node name="AnimatedSprite" parent="." index="0"]
-frame = 1
-
 [node name="CollisionShape2D" parent="." index="1"]
 visible = false
 [connection signal="area_shape_entered" from="PlayersCollisionDetector" to="." method="_on_PlayersCollisionDetector_area_shape_entered"]

@@ -58,10 +58,15 @@ remote func is_room_join_valid(room_id):
 	# check if there's an open room with "room_id" & not full
 	# response with null if all good, error message otherwise
 	var error_msg = null
+	var room_node = HelperFunctions.get_room_node(room_id)
 	if not room_id in Globals.running_rooms_ids:
 		error_msg = 'Error: Wrong PIN Entered'
-	elif HelperFunctions.get_room_node(room_id).player_ids.size() >= Globals.ROOM_MAX_PLAYERS:
+	
+	elif room_node.player_ids.size() >= Globals.ROOM_MAX_PLAYERS:
 		error_msg = 'Error: Room is full'
+		
+	elif room_node.has_game_started:
+		error_msg = 'Error: Game already started'
 		
 	rpc_id(get_tree().get_rpc_sender_id(), 'response_room_id_join_validation', error_msg)
 
@@ -108,6 +113,7 @@ remote func start_game(room_id):
 	# notify all other room players & start running
 	var room_node = HelperFunctions.get_room_node(room_id)
 	if room_node.teams_players['Team1'].size() >= 1 and room_node.teams_players['Team2'].size() >= 1:
+		room_node.has_game_started = true
 		var pids = room_node.get_player_ids()
 		for pid in pids:
 			rpc_id(pid, 'start_game')
@@ -139,11 +145,13 @@ remote func round_start(room_id):
 
 remote func receive_player_caught(catcher_pid, runner_pid, room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)
-	var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
-	for pid in pids:
-		rpc_id(pid, 'receive_player_caught', catcher_pid, runner_pid)
-	##### update locally, remove from player_states, determine win, etc. #####
-	room_node.on_player_caught(catcher_pid, runner_pid)
+	if room_node.is_player_in_round(runner_pid):
+		# handle client sync issues
+		var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
+		for pid in pids:
+			rpc_id(pid, 'receive_player_caught', catcher_pid, runner_pid)
+		##### update locally, remove from player_states, determine win, etc. #####
+		room_node.on_player_caught(catcher_pid, runner_pid)
 
 
 remote func receive_player_reached_eom(room_id):

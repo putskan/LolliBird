@@ -2,7 +2,6 @@ extends Node2D
 
 var round_number = 1
 var total_rounds = 6
-
 var host_id
 var host_name
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
@@ -19,7 +18,7 @@ var teams_players = {'Team1': {}, 'Team2': {}, 'Unassigned': {}}
 var player_ids = []
 var captures = {}
 var players_left_in_round = []
-
+var has_game_started = false
 
 func _ready():
 	# change to true when game starts
@@ -91,6 +90,10 @@ func update_player_team(player_id, team_name):
 
 func is_player_in_room(player_id):
 	return player_ids.has(player_id)
+
+
+func is_player_in_round(player_id):
+	return players_left_in_round.has(player_id)
 
 
 func remove_player(player_id):
@@ -225,3 +228,4 @@ func prepare_for_rematch():
 	player_ids = []
 	captures = {}
 	players_left_in_round = []
+	has_game_started = false

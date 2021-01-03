@@ -34,8 +34,9 @@ func _physics_process(_delta):
 
 func _on_player_disconnect(player_id):
 	# clear player node. the container will be flushed in the next round.
-	if players_ids_to_nodes.has(player_id):
-		players_ids_to_nodes[player_id].queue_free()
+	var player_node = get_player_node_by_id(player_id)
+	if player_node:
+		player_node.queue_free()
 		players_ids_to_nodes.erase(player_id)
 
 
@@ -113,6 +114,12 @@ func create_player_node(team_name, player_id):
 	return player_node
 
 
+func get_player_node_by_id(player_id):
+	if players_ids_to_nodes.has(player_id):
+		return players_ids_to_nodes[player_id]
+	return null
+
+
 func set_player_collision(player_node, team_name):
 	# collide and slide with own team, detect collision with the other team.
 	var team_layer_bit
@@ -168,25 +175,32 @@ func update_all_players_states(players_states):
 		players_states.erase('T')
 		players_states.erase(Globals.player_id)
 		for player_id in players_states:
-			if players_ids_to_nodes.has(player_id):
+			var player_node = get_player_node_by_id(player_id)
+			if player_node:
 				# if not eliminated
 				var new_position = players_states[player_id]['P']
-				players_ids_to_nodes[player_id].set_global_position(new_position)
-	
+				player_node.set_global_position(new_position)
+
 
 func handle_players_collision(other_player_id):
-	if is_player_caught_on_collision():
+	if is_own_player_catcher():
+		print('handle_players_collision')
+		emit_signal('player_caught', Globals.player_id, other_player_id)
+		eliminate_player(players_ids_to_nodes[other_player_id])
+	else:
 		emit_signal('player_caught', other_player_id, Globals.player_id)
 		eliminate_player(client_player_node)
 
 
-func is_player_caught_on_collision():
-	# called on collision with another player
-	# check if the player was caught by one of the other team's players
-	return Globals.catchers_team != Globals.player_team
+func is_own_player_catcher():
+	# return true if the client is a catcher, false otherwise
+	return Globals.catchers_team == Globals.player_team
 
 
 func eliminate_player(eliminated_player_node):
-	var pid = int(eliminated_player_node.name)
-	players_ids_to_nodes.erase(pid)
-	eliminated_player_node.queue_free()
+	print('dada')
+	if eliminated_player_node:
+		print('haha')
+		var pid = int(eliminated_player_node.name)
+		players_ids_to_nodes.erase(pid)
+		eliminated_player_node.queue_free()

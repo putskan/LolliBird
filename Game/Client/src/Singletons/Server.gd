@@ -94,9 +94,8 @@ func request_player_creation(player_name, room_id, player_team='Unassigned'):
 	rpc_id(1, 'create_player', player_name, player_team, room_id)
 
 
-remote func response_player_creation(_error_message):
-	# error_message: str if error occurred in serverside's player creation, null otherwise
-	# current scene should be UserPrefs
+remote func response_player_creation(_error_msg):
+	# :str error_message: error occurred in serverside's player creation, null otherwise
 	SceneHandler.handle_scene_change('GoToLobby')
 
 
@@ -174,12 +173,11 @@ func multicast_player_caught(catcher_pid, runner_pid):
 
 remote func receive_player_caught(catcher_pid, runner_pid):
 	# caught by Game
-	print('received_player_caught_remotely!')
 	emit_signal('player_caught', catcher_pid, runner_pid)
 
 
 func notify_player_reached_eom():
-	# eom > end of map
+	# eom - end of map
 	rpc_id(1, 'receive_player_reached_eom', Globals.room_id)
 
 
