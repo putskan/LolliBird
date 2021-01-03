@@ -28,21 +28,18 @@ func _process(_delta):
 
 
 func connect_to_server():
-	# non websocket implementation, using ENet: network.create_client(ip, port)
 	network.connect_to_url(server_url, PoolStringArray(), true);
 	get_tree().set_network_peer(network)
-	# set_network_master(1) - not a must.
 	network.connect("connection_failed", self, "_on_connection_failed")
 	network.connect("connection_succeeded", self, "_on_connection_succeeded")
 
 
 func _on_connection_failed():
-	print('failed to connect')
+	pass
 
 
 func _on_connection_succeeded():
 	Globals.player_id = get_tree().get_network_unique_id()
-	print('succesfully connected')
 
 
 remote func receive_player_disconnect(player_id):
@@ -57,7 +54,6 @@ remote func receive_player_disconnect(player_id):
 func request_room_id_join_validation(room_id):
 	# send room id to server for validation that room exists/not full, etc.
 	# called from JoinRoom
-	print('Client: verifying room id: %d' % room_id)
 	rpc_id(1, 'is_room_join_valid', room_id)
 
 
@@ -119,7 +115,6 @@ remote func change_team_of_player(old_team_name, new_team_name, player_id):
 	if player_id == Globals.player_id:
 		Globals.player_team = new_team_name
 		
-	### change in receiver
 	emit_signal("change_team_of_player_sig", old_team_name, new_team_name, player_id)
 
 
@@ -133,7 +128,6 @@ func request_start_game():
 
 remote func response_start_game(error_msg=null):
 	emit_signal('receive_response_start_game', error_msg)
-	# call from server
 
 
 remote func start_game():
@@ -163,7 +157,6 @@ func request_round_start():
 
 remote func round_start():
 	Globals.first_round_start = true
-	print('Server: %s' % Globals.first_round_start)
 	emit_signal('round_start')
 
 

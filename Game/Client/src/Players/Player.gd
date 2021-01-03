@@ -29,11 +29,11 @@ func _movement_loop():
 	else:
 		motion.y = motion.y / FRICTION
 	
-	# should be get_scale.x -> there seems to be a bug in Godot.
+	
 	if Input.is_action_pressed("ui_right") and not $AnimatedSprite.flip_h:
 		motion.x = min(motion.x + SPEED, MAX_SPEED)
 
-			
+
 	elif Input.is_action_pressed("ui_left") and $AnimatedSprite.flip_h:
 			motion.x = max(motion.x - SPEED, -MAX_SPEED)
 			

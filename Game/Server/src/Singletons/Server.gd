@@ -6,14 +6,14 @@ onready var root_node = get_tree().get_root()
 
 
 func _ready():
-	print("I'm The Real Server!")
 	start_server()
 
 
 func _process(_delta):
 	if network.is_listening():
-		# checking for incoming connections
+		# check for incoming connections
 		network.poll()
+
 
 func start_server():
 	network.listen(PORT, PoolStringArray(), true);
@@ -24,12 +24,10 @@ func start_server():
 
 
 func _peer_connected(player_id):
-	# player_id is actually peer_id
-	print("User %s Connected!" % player_id)
+	pass
 
 
 func _peer_disconnected(player_id):
-	print("User %s Disconnected!" % player_id)
 	for room_node in Globals.running_rooms_node.get_children():
 		if room_node.is_player_in_room(player_id):
 			room_node.remove_player(player_id)
@@ -87,7 +85,6 @@ remote func create_player(player_name, player_team, room_id):
 	var player_id = get_tree().get_rpc_sender_id()
 	var error_message = HelperFunctions.create_player(get_tree().get_rpc_sender_id(), player_name, player_team, room_id)
 	rpc_id(player_id, 'response_player_creation', error_message)
-	# update 
 	if not error_message:
 		# send all existing players to the new player
 		rpc_id(player_id, 'init_teams_players', HelperFunctions.get_room_node(room_id).teams_players)
@@ -119,7 +116,6 @@ remote func start_game(room_id):
 			rpc_id(pid, 'start_game')
 	else:
 		rpc_id(get_tree().get_rpc_sender_id(), 'response_start_game', 'Error: assign players to teams')
-	# HelperFunctions.get_room_node(room_id).set_physics_process(true)
 	
 
 remote func receive_player_state(player_state, room_id):
@@ -150,7 +146,6 @@ remote func receive_player_caught(catcher_pid, runner_pid, room_id):
 		var pids = room_node.get_player_ids(get_tree().get_rpc_sender_id())
 		for pid in pids:
 			rpc_id(pid, 'receive_player_caught', catcher_pid, runner_pid)
-		##### update locally, remove from player_states, determine win, etc. #####
 		room_node.on_player_caught(catcher_pid, runner_pid)
 
 
@@ -170,4 +165,3 @@ func multicast_game_finish(winning_team, room_node):
 	var pids = room_node.get_player_ids()
 	for pid in pids:
 		rpc_id(pid, 'receive_game_finish', winning_team)
-	

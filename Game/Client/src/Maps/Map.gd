@@ -30,10 +30,8 @@ func _process(_delta):
 	# used for off-tab browser sync purposes
 	# if another client started the game, stop the countdown and start game as well
 	if latest_players_states_timestamp:
-		print(latest_players_states_timestamp)
 		_on_CountdownVideo_finished()
 		set_process(false)
-		#set_physics_process(false)
 
 
 func _physics_process(_delta):
@@ -72,7 +70,6 @@ func _on_player_disconnect(player_id):
 
 
 func _on_game_round_start():
-	print('Map: Received Signal')
 	countdown_video_node.visible = true
 	countdown_video_node.play()
 	set_process(true)
@@ -128,7 +125,6 @@ func clear_map_players():
 	players_ids_to_nodes = {}
 
 
-
 func create_player_node(team_name, player_id):
 	var player_node
 	if player_id == Globals.player_id:
@@ -156,12 +152,10 @@ func set_player_collision(player_node, team_name):
 	var team_layer_bit
 	var other_team_layer_bit
 	if team_name == Globals.catchers_team:
-		print('cathcer')
 		team_layer_bit = Globals.CATCHERS_COLLISION_BIT
 		other_team_layer_bit = Globals.RUNNERS_COLLISION_BIT
 		
 	else:
-		print('runner')
 		team_layer_bit = Globals.RUNNERS_COLLISION_BIT
 		other_team_layer_bit = Globals.CATCHERS_COLLISION_BIT
 
@@ -209,7 +203,6 @@ func update_all_players_states(players_states):
 
 func handle_players_collision(other_player_id):
 	if is_own_player_catcher():
-		print('handle_players_collision')
 		emit_signal('player_caught', Globals.player_id, other_player_id)
 		eliminate_player(players_ids_to_nodes[other_player_id])
 	else:

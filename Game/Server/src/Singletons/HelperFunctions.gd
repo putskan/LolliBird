@@ -30,7 +30,6 @@ func create_player(player_id, player_name, player_team, room_id):
 	# add player data to room
 	var player = {player_id: {'player_name': player_name}}
 	room_node.add_player(player, player_team)
-	
 	# overcome a rematch edge case - host leaves room and rejoins
 	if player_id == room_node.host_id:
 		room_node.host_name = player_name
@@ -39,7 +38,6 @@ func create_player(player_id, player_name, player_team, room_id):
 
 
 func get_room_node(room_id):
-	# return get_tree().get_root().find_node(str(room_id), true, false)
 	return Globals.running_rooms_node.get_node(str(room_id))
 
 

@@ -10,7 +10,7 @@ func _ready():
 		win_announcement_label.text = win_announcement_label.text % (Globals.team_won + '!')
 	else:
 		win_announcement_label.text = win_announcement_label.text % (Globals.team_won + ' Won!')
-		
+	
 	HelperFunctions.prepare_for_rematch()
 
 

@@ -28,7 +28,6 @@ func _ready():
 func _physics_process(_delta):
 	# runs 20 times per second
 	handle_players_states_distribution()
-	## Add check if finished round/collision/etc.
 
 
 func handle_players_states_distribution():
@@ -123,7 +122,6 @@ func remove_player(player_id):
 
 
 func get_name_by_id(player_id):
-	print(teams_players)
 	for team_name in teams_players:
 		if teams_players[team_name].has(player_id):
 			return teams_players[team_name][player_id]['player_name']

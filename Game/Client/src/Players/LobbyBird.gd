@@ -11,7 +11,6 @@ onready var current_team_name = get_parent().get_parent().name
 func _ready():
 	yield(get_tree(),"idle_frame")
 	current_scene = get_tree().get_current_scene()
-	# current_scene.all_lobby_birds.append(self)
 	teams_parent = get_tree().get_current_scene().get_node('VBoxContainer/Teams')
 	teams_rect_nodes = [current_scene.get_node('VBoxContainer/Teams/Team1'),
 						current_scene.get_node('VBoxContainer/Teams/Team2'), 
