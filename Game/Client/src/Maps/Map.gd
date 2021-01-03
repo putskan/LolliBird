@@ -6,6 +6,9 @@ var player_bird_res = preload('res://src/Players/Player.tscn')
 var client_player_node
 # last time server sent players states
 var latest_players_states_timestamp = null
+# used for interpolation purposes
+# structure: [state_to_interpolate_from, state_to_interpolate_to, future_state1, future_state2...]
+var players_states_buffer = []
 var players_ids_to_nodes = {}
 var name_labels = []
 onready var countdown_video_node = get_node('CountdownVideo')
@@ -13,7 +16,7 @@ signal player_caught(catcher_pid, runner_pid)
 
 
 func _ready():
-	set_physics_process(false)
+	set_process(false)
 	init_all_players()
 	Server.connect('player_disconnect', self, '_on_player_disconnect')
 	Server.connect('receive_players_states', self, 'update_all_players_states')
@@ -23,13 +26,41 @@ func _ready():
 	game_node.connect('game_round_finish', self, '_on_game_round_finish')
 
 
-func _physics_process(_delta):
+func _process(_delta):
 	# used for off-tab browser sync purposes
 	# if another client started the game, stop the countdown and start game as well
 	if latest_players_states_timestamp:
 		print(latest_players_states_timestamp)
 		_on_CountdownVideo_finished()
-		set_physics_process(false)
+		set_process(false)
+		#set_physics_process(false)
+
+
+func _physics_process(_delta):
+	"""
+	handle players states and interpolation
+	"""
+	# time of the frame to render
+	var render_time = OS.get_system_time_msecs() - Globals.INTERPOLATION_OFFSET
+	if players_states_buffer.size() > 1:
+		while players_states_buffer.size() > 2 and render_time > players_states_buffer[1].T:
+			# pop states we've already fully interpolated from (remove old states)
+			players_states_buffer.remove(0)
+		# a float between 0-1 indicating how close we are to the newer state (percentage)
+		var interpolation_factor = float(render_time - players_states_buffer[0]['T']) / float(players_states_buffer[1]['T'] - players_states_buffer[0]['T'])
+		for pid in players_states_buffer[1]:
+			if str(pid) == 'T':
+				continue
+			if pid == Globals.player_id:
+				continue
+			# make sure exist in both states
+			if not players_states_buffer[0].has(pid):
+				continue
+			var player_node = get_player_node_by_id(pid)
+			# if not eliminated
+			if player_node:
+				var new_pos = lerp(players_states_buffer[0][pid]['P'], players_states_buffer[1][pid]['P'], interpolation_factor)
+				player_node.set_global_position(new_pos)
 
 
 func _on_player_disconnect(player_id):
@@ -44,7 +75,7 @@ func _on_game_round_start():
 	print('Map: Received Signal')
 	countdown_video_node.visible = true
 	countdown_video_node.play()
-	set_physics_process(true)
+	set_process(true)
 
 
 func _on_game_round_finish():
@@ -166,20 +197,14 @@ func add_player_name_label(aligner_node, player_name, player_id):
 
 
 func update_all_players_states(players_states):
+	# update states, so they could be used for players positioning and interpolation
 	if players_states.size() <= 1:
 		return
 	
 	if latest_players_states_timestamp == null or players_states['T'] > latest_players_states_timestamp:
 		# new data received
 		latest_players_states_timestamp = players_states['T']
-		players_states.erase('T')
-		players_states.erase(Globals.player_id)
-		for player_id in players_states:
-			var player_node = get_player_node_by_id(player_id)
-			if player_node:
-				# if not eliminated
-				var new_position = players_states[player_id]['P']
-				player_node.set_global_position(new_position)
+		players_states_buffer.append(players_states)
 
 
 func handle_players_collision(other_player_id):
@@ -198,9 +223,7 @@ func is_own_player_catcher():
 
 
 func eliminate_player(eliminated_player_node):
-	print('dada')
 	if eliminated_player_node:
-		print('haha')
 		var pid = int(eliminated_player_node.name)
 		players_ids_to_nodes.erase(pid)
 		eliminated_player_node.queue_free()
