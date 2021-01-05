@@ -2,8 +2,12 @@ extends Node
 
 const IP_ADDRESS = "127.0.0.1"
 const PORT = 11111
-var network = WebSocketClient.new()
 var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
+#const IP_ADDRESS = 'lollibird.herokuapp.com'
+#const PORT = 443
+#var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
+
+var network = WebSocketClient.new()
 signal player_disconnect(player_id)
 signal init_teams_players
 signal assign_as_room_host

@@ -11,9 +11,11 @@ signal collided_with_another_player(other_player_id)
 func _ready():
 	set_physics_process(false)
 
+
 func _physics_process(_delta):
-	_movement_loop()
 	_send_player_state()
+	_movement_loop()
+
 
 func _movement_loop():
 	if Input.is_action_pressed("ui_up"):

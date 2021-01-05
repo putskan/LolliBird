@@ -17,6 +17,7 @@ func create_room(host_id):
 	# set room attributes
 	var room_id = HelperFunctions._generate_room_id()
 	room.name = str(room_id)
+	room.room_id = room_id
 	room.host_id = host_id
 	# add to SceneTree
 	get_tree().get_root().get_node('RunningRooms').add_child(room, true)
@@ -39,5 +40,4 @@ func create_player(player_id, player_name, player_team, room_id):
 
 func get_room_node(room_id):
 	return Globals.running_rooms_node.get_node(str(room_id))
-
 

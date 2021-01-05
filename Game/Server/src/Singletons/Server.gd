@@ -116,17 +116,15 @@ remote func start_game(room_id):
 			rpc_id(pid, 'start_game')
 	else:
 		rpc_id(get_tree().get_rpc_sender_id(), 'response_start_game', 'Error: assign players to teams')
-	
+
 
 remote func receive_player_state(player_state, room_id):
-	var room_node = HelperFunctions.get_room_node(room_id)
-	room_node.update_player_state(get_tree().get_rpc_sender_id(), player_state)
+	HelperFunctions.get_room_node(room_id).update_player_state(get_tree().get_rpc_sender_id(), player_state)
 
 
 func multicast_players_states(room_id, players_states):
 	# called from room
-	var room_node = HelperFunctions.get_room_node(room_id)
-	var pids = room_node.get_player_ids()
+	var pids = HelperFunctions.get_room_node(room_id).get_player_ids()
 	for pid in pids:
 		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
 

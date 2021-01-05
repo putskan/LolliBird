@@ -4,6 +4,7 @@ var round_number = 1
 var total_rounds = 6
 var host_id
 var host_name
+var room_id
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
 var player_state_collection = {}
 
@@ -27,34 +28,24 @@ func _ready():
 
 func _physics_process(_delta):
 	# runs 20 times per second
-	handle_players_states_distribution()
-
-
-func handle_players_states_distribution():
 	# clean & multicast players states
-	var players_states = prepare_players_states()
-	var room_id = int(self.name)
+	var players_states = clean_players_states(player_state_collection)
 	Server.multicast_players_states(room_id, players_states)
 
 
-func prepare_players_states():
+func clean_players_states(players_states):
 	# clean the players states for the client (remove clients' & add own timestamp)
-	var players_states_to_client = {}
-	for pid in player_state_collection:
-		var state = player_state_collection[pid].duplicate()
-		state.erase('T')
-		players_states_to_client[pid] = state
-	players_states_to_client['T'] = OS.get_system_time_msecs()
-	return players_states_to_client
+	var cleaned_players_states = players_states.duplicate(true)
+	for pid in cleaned_players_states:
+		cleaned_players_states[pid].erase('T')
+	cleaned_players_states['T'] = OS.get_system_time_msecs()
+	return cleaned_players_states
 
 
 func update_player_state(player_id, player_state):
 	# update a player's state on the server (only on new timestamps)
 	# called on update from a client
-	if not player_state_collection.has(player_id):
-		player_state_collection[player_id] = player_state
-		
-	elif player_state_collection[player_id]['T'] < player_state['T']:
+	if (not player_state_collection.has(player_id)) or player_state_collection[player_id]['T'] < player_state['T']:
 		player_state_collection[player_id] = player_state
 
 
@@ -83,7 +74,7 @@ func update_player_team(player_id, team_name):
 			teams_players[team_name][player_id] = player_attributes
 			return true
 			
-	push_error('Room %s: Player %d update failed - player not found!' % [self.name, player_id])
+	push_error('Room %d: Player %d update failed - player not found!' % [room_id, player_id])
 	return false
 
 
@@ -128,7 +119,7 @@ func get_name_by_id(player_id):
 
 
 func close_room():
-	Globals.running_rooms_ids.erase(int(self.name))
+	Globals.running_rooms_ids.erase(room_id)
 	queue_free()
 
 
