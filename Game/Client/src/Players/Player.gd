@@ -1,7 +1,8 @@
 extends KinematicBody2D
 
-const MAX_SPEED = 700
-const SPEED = 17
+const MAX_SPEED = 550
+const X_SPEED = 14
+const Y_SPEED = 16
 const FRICTION = 1.1
 
 var motion = Vector2()
@@ -19,12 +20,12 @@ func _physics_process(_delta):
 
 func _movement_loop():
 	if Input.is_action_pressed("ui_up"):
-		motion.y -= SPEED
+		motion.y -= Y_SPEED
 		if motion.y > 0:
 			motion.y = motion.y / FRICTION
 			
 	elif Input.is_action_pressed("ui_down"):
-		motion.y += SPEED
+		motion.y += Y_SPEED
 		if motion.y < 0:
 			motion.y = motion.y / FRICTION
 		
@@ -33,11 +34,11 @@ func _movement_loop():
 	
 	
 	if Input.is_action_pressed("ui_right") and not $AnimatedSprite.flip_h:
-		motion.x = min(motion.x + SPEED, MAX_SPEED)
+		motion.x = min(motion.x + X_SPEED, MAX_SPEED)
 
 
 	elif Input.is_action_pressed("ui_left") and $AnimatedSprite.flip_h:
-			motion.x = max(motion.x - SPEED, -MAX_SPEED)
+			motion.x = max(motion.x - X_SPEED, -MAX_SPEED)
 			
 	else:
 		motion.x = motion.x / FRICTION

@@ -17,6 +17,7 @@ func play_sfx(event):
 
 
 func play_music(game_state):
+	return
 	bg_menu_tween.stop_all()
 	bg_game_tween.stop_all()
 	match game_state:
