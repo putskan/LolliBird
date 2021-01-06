@@ -1,13 +1,19 @@
 extends Node
 
-const IP_ADDRESS = "127.0.0.1"
-const PORT = 11111
-var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
-#const IP_ADDRESS = 'lollibird.herokuapp.com'
-#const PORT = 443
-#var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
-
+# const IP_ADDRESS = "127.0.0.1"
+# const PORT = 11111
+# var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
+const IP_ADDRESS = 'lollibird.herokuapp.com'
+const PORT = 443
+var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
 var network = WebSocketClient.new()
+# clock sync varibales
+var latency = 0
+var client_clock = 0
+var decimal_collector : float = 0
+var latency_array = []
+var delta_latency = 0
+
 signal player_disconnect(player_id)
 signal init_teams_players
 signal assign_as_room_host
@@ -22,13 +28,26 @@ signal player_caught(catcher_pid, runner_pid)
 signal game_finish(winning_team)
 signal receive_response_start_game(error_msg)
 
+
 func _ready():
 	connect_to_server()
+	set_physics_process(false)
 
 
 func _process(_delta):
 	if network.get_connection_status() in [NetworkedMultiplayerPeer.CONNECTION_CONNECTED, NetworkedMultiplayerPeer.CONNECTION_CONNECTING]:
 		network.poll();
+
+
+func _physics_process(delta):
+	# make the clock tick
+	client_clock += int(delta * 1000) + delta_latency
+	delta_latency = 0
+	# collect remaining milliseconds - ~0.667 ms per iteration
+	decimal_collector += (delta * 1000) - int(delta * 1000)
+	if decimal_collector >= 1.00:
+		client_clock += 1
+		decimal_collector -= 1.00
 
 
 func connect_to_server():
@@ -46,6 +65,47 @@ func _on_connection_succeeded():
 	Globals.player_id = get_tree().get_network_unique_id()
 
 
+func start_clock_sync():
+	# called by Game
+	set_physics_process(true)
+	rpc_id(1, 'fetch_server_time', OS.get_system_time_msecs())
+	var timer = Timer.new()
+	timer.wait_time = 0.5
+	timer.autostart = true
+	timer.connect('timeout', self, 'determine_latency')
+	self.add_child(timer)
+
+
+remote func return_server_time(server_time, client_time):
+	# add the latency because until the packet arrives, the server's clock is already higher
+	latency = (OS.get_system_time_msecs() - client_time) / 2
+	client_clock = server_time + latency
+
+
+func determine_latency():
+	rpc_id(1, 'determine_latency', OS.get_system_time_msecs())
+
+
+remote func return_latency(client_time):
+	latency_array.append((OS.get_system_time_msecs() - client_time) / 2)
+	if latency_array.size() == 9:
+		var total_latency = 0
+		latency_array.sort()
+		var mid_point = latency_array[4]
+		for i in range(latency_array.size()-1, -1, -1):
+			var current_latency = latency_array[i]
+			if current_latency > mid_point * 2 and current_latency > 20:
+				# remove high-latency that occured due to packet loss
+				latency_array.remove(i)
+			else:
+				total_latency += current_latency
+				
+		var avg_latency = total_latency / latency_array.size()
+		delta_latency = avg_latency - latency
+		latency = avg_latency
+		latency_array.clear()
+
+
 remote func receive_player_disconnect(player_id):
 	for team in Globals.teams_players:
 		var players_in_team = Globals.teams_players[team]
@@ -53,7 +113,7 @@ remote func receive_player_disconnect(player_id):
 			players_in_team.erase(player_id)
 			
 	emit_signal('player_disconnect', player_id)
-	
+
 
 func request_room_id_join_validation(room_id):
 	# send room id to server for validation that room exists/not full, etc.

@@ -18,7 +18,6 @@ func _process(_delta):
 func start_server():
 	network.listen(PORT, PoolStringArray(), true);
 	get_tree().set_network_peer(network)
-	
 	network.connect("peer_connected", self, "_peer_connected")
 	network.connect("peer_disconnected", self, "_peer_disconnected")
 
@@ -36,6 +35,14 @@ func _peer_disconnected(player_id):
 				for pid in room_node.get_player_ids():
 					rpc_id(pid, 'receive_player_disconnect', player_id)
 			return
+
+
+remote func fetch_server_time(client_time):
+	rpc_id(get_tree().get_rpc_sender_id(), 'return_server_time', OS.get_system_time_msecs(), client_time)
+
+
+remote func determine_latency(client_time):
+	rpc_id(get_tree().get_rpc_sender_id(), 'return_latency', client_time)
 
 
 func assign_new_room_host(host_id):
