@@ -9,7 +9,6 @@ var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
 var network = WebSocketClient.new()
 # clock sync varibales
 var latency = 0
-var client_clock = 0
 var decimal_collector : float = 0
 var latency_array = []
 var delta_latency = 0
@@ -41,12 +40,12 @@ func _process(_delta):
 
 func _physics_process(delta):
 	# make the clock tick
-	client_clock += int(delta * 1000) + delta_latency
+	Globals.client_clock += int(delta * 1000) + delta_latency
 	delta_latency = 0
 	# collect remaining milliseconds - ~0.667 ms per iteration
 	decimal_collector += (delta * 1000) - int(delta * 1000)
 	if decimal_collector >= 1.00:
-		client_clock += 1
+		Globals.client_clock += 1
 		decimal_collector -= 1.00
 
 
@@ -79,7 +78,7 @@ func start_clock_sync():
 remote func return_server_time(server_time, client_time):
 	# add the latency because until the packet arrives, the server's clock is already higher
 	latency = (OS.get_system_time_msecs() - client_time) / 2
-	client_clock = server_time + latency
+	Globals.client_clock = server_time + latency
 
 
 func determine_latency():

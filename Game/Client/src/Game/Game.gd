@@ -15,7 +15,6 @@ signal game_round_finish
 
 func _ready():
 	Server.start_clock_sync()
-	
 	if Globals.first_round_start:
 		# make sure map scene has loaded and connected to game signals
 		yield(get_tree(),"idle_frame")

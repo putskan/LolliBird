@@ -1,6 +1,7 @@
 extends Node
 
 # general vars
+
 const ROOM_ID_LENGTH = 4
 const TEAM_1_NOTATION = 'Team1'
 const TEAM_2_NOTATION = 'Team2'
@@ -11,6 +12,7 @@ const RUNNERS_COLLISION_BIT = 2
 const END_OF_MAP_COLLISION_BIT = 3
 const INTERPOLATION_OFFSET = 100
 var small_dynamic_font_res = preload("res://src/UI/themes/main_font_small_size.tres")
+var client_clock = 0
 var player_id
 
 # first assigned in HelperFunctions:

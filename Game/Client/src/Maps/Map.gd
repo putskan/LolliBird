@@ -39,7 +39,7 @@ func _physics_process(_delta):
 	handle players states and interpolation
 	"""
 	# time of the frame to render
-	var render_time = OS.get_system_time_msecs() - Globals.INTERPOLATION_OFFSET
+	var render_time = Globals.client_clock - Globals.INTERPOLATION_OFFSET
 	if players_states_buffer.size() > 1:
 		while players_states_buffer.size() > 2 and render_time > players_states_buffer[1].T:
 			# pop states we've already fully interpolated from (remove old states)
