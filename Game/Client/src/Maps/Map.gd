@@ -203,7 +203,6 @@ func update_all_players_states(players_states):
 
 func handle_players_collision(other_player_id):
 	if is_own_player_catcher():
-		print('i catched some1 else')
 		emit_signal('player_caught', Globals.player_id, other_player_id)
 		eliminate_player(players_ids_to_nodes[other_player_id])
 	else:

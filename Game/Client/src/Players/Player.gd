@@ -52,7 +52,7 @@ func _send_player_state():
 
 func _on_PlayersCollisionDetector_area_shape_entered(_area_id, area, _area_shape, _self_shape):
 	# check who collided and act accordingly 
-	if area.get_collision_layer_bit(Globals.CATCHERS_COLLISION_BIT) or area.get_collision_layer_bit(Globals.CATCHERS_COLLISION_BIT):
+	if area.get_collision_layer_bit(Globals.RUNNERS_COLLISION_BIT) or area.get_collision_layer_bit(Globals.CATCHERS_COLLISION_BIT):
 		var other_player_id = int(area.get_parent().name)
 		emit_signal('collided_with_another_player', other_player_id)
 
