@@ -14,6 +14,7 @@ var latency_array = []
 var delta_latency = 0
 
 signal player_disconnect(player_id)
+signal return_from_tab_switch
 signal init_teams_players
 signal assign_as_room_host
 signal receive_host_name(host_name)
@@ -31,14 +32,19 @@ signal receive_response_start_game(error_msg)
 func _ready():
 	connect_to_server()
 	set_physics_process(false)
+	self.connect('return_from_tab_switch', self, 'fetch_server_time')
 
 
 func _process(_delta):
 	if network.get_connection_status() in [NetworkedMultiplayerPeer.CONNECTION_CONNECTED, NetworkedMultiplayerPeer.CONNECTION_CONNECTING]:
-		network.poll();
+		network.poll()
 
 
 func _physics_process(delta):
+	# handle tab switches in game
+	if HelperFunctions.check_return_from_tab_switch():
+		emit_signal('return_from_tab_switch')
+
 	# make the clock tick
 	Globals.client_clock += int(delta * 1000) + delta_latency
 	delta_latency = 0
@@ -67,12 +73,16 @@ func _on_connection_succeeded():
 func start_clock_sync():
 	# called by Game
 	set_physics_process(true)
-	rpc_id(1, 'fetch_server_time', OS.get_system_time_msecs())
+	fetch_server_time()
 	var timer = Timer.new()
 	timer.wait_time = 0.5
 	timer.autostart = true
 	timer.connect('timeout', self, 'determine_latency')
 	self.add_child(timer)
+
+
+func fetch_server_time():
+	rpc_id(1, 'fetch_server_time', OS.get_system_time_msecs())
 
 
 remote func return_server_time(server_time, client_time):
