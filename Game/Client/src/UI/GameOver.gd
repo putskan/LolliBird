@@ -6,6 +6,7 @@ onready var back_node = get_node("CenterContainer/VBoxContainer/VBoxContainer/Ba
 
 
 func _ready():
+	Audio.play_music('menu')
 	if Globals.team_won == 'Draw':
 		win_announcement_label.text = win_announcement_label.text % (Globals.team_won + '!')
 	else:

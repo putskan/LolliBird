@@ -1,6 +1,7 @@
 extends MarginContainer
 
 func _ready():
+	Audio.play_music('menu')
 	HelperFunctions.init_globals()
 	
 func _on_CreateGame_pressed():

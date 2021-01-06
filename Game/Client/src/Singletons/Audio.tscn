@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/audio/music/Hey There Delilah (Punk Cover 2014 by Cody Osbourne Hoover).ogg" type="AudioStream" id=1]
+[ext_resource path="res://assets/audio/sfx/borders_collision.wav" type="AudioStream" id=2]
+[ext_resource path="res://assets/audio/sfx/players_collision.wav" type="AudioStream" id=3]
+[ext_resource path="res://assets/audio/music/Hey there delilah lyrics..ogg" type="AudioStream" id=4]
+[ext_resource path="res://src/Singletons/Audio.gd" type="Script" id=5]
+
+[node name="Audio" type="Node"]
+script = ExtResource( 5 )
+
+[node name="BgMenuMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+volume_db = -55.0
+
+[node name="BgMenuTween" type="Tween" parent="BgMenuMusic"]
+
+[node name="BgGameMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+volume_db = -55.0
+
+[node name="BgGameTween" type="Tween" parent="BgGameMusic"]
+
+[node name="PlayerEliminationSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = 24.0
+
+[node name="HitWall" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = 22.471
+[connection signal="tween_completed" from="BgMenuMusic/BgMenuTween" to="." method="_on_BgMenuTween_tween_completed"]
+[connection signal="tween_completed" from="BgGameMusic/BgGameTween" to="." method="_on_BgGameTween_tween_completed"]

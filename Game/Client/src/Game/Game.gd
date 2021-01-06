@@ -14,6 +14,7 @@ signal game_round_start
 signal game_round_finish
 
 func _ready():
+	Audio.play_music('game')
 	Server.start_clock_sync()
 	if Globals.first_round_start:
 		# make sure map scene has loaded and connected to game signals

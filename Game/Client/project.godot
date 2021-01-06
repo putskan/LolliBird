@@ -22,9 +22,10 @@ config/icon="res://icon.png"
 [autoload]
 
 Server="*res://src/Singletons/Server.gd"
-SceneHandler="*res://src/Singletons/SceneHandler.gd"
+Audio="*res://src/Singletons/Audio.tscn"
 Globals="*res://src/Singletons/Globals.gd"
 HelperFunctions="*res://HelperFunctions.gd"
+SceneHandler="*res://src/Singletons/SceneHandler.gd"
 
 [display]
 
@@ -33,6 +34,7 @@ window/stretch/aspect="keep"
 
 [layer_names]
 
+2d_physics/layer_1="static objects"
 2d_physics/layer_2="catchers"
 2d_physics/layer_3="runners"
 2d_physics/layer_4="end of map"
