@@ -15,11 +15,6 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 8 ) ],
-"loop": true,
-"name": "Team1",
-"speed": 11.0
-}, {
 "frames": [ ExtResource( 5 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "Unassigned",
@@ -28,6 +23,11 @@ animations = [ {
 "frames": [ ExtResource( 11 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 6 ) ],
 "loop": true,
 "name": "Team2",
+"speed": 11.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 8 ) ],
+"loop": true,
+"name": "Team1",
 "speed": 11.0
 } ]
 
