@@ -117,6 +117,7 @@ func init_map_player(team_name, player_id, player_name):
 
 func clear_map_players():
 	latest_players_states_timestamp = null
+	players_states_buffer.clear()
 	for team_name in ['Team1', 'Team2']:
 		var team_players_container = get_node("%sPlayers" % team_name)
 		for player_container in team_players_container.get_children():
