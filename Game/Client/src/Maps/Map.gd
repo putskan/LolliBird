@@ -6,8 +6,8 @@ var player_bird_res = preload('res://src/Players/Player.tscn')
 var client_player_node
 # last time server sent players states
 var latest_players_states_timestamp = null
-# used for interpolation purposes
-# structure: [state_to_interpolate_from, state_to_interpolate_to, future_state1, future_state2...]
+# used for interpolation & extrapolation purposes
+# structure: [previous_state_for_extrapolation, state_to_interpolate_from, state_to_interpolate_to, future_state1, future_state2...]
 var players_states_buffer = []
 var players_ids_to_nodes = {}
 var name_labels = []
@@ -36,29 +36,50 @@ func _process(_delta):
 
 func _physics_process(_delta):
 	"""
-	handle players states and interpolation
+	handle players states using interpolation & extrapolation
 	"""
 	# time of the frame to render
 	var render_time = Globals.client_clock - Globals.INTERPOLATION_OFFSET
 	if players_states_buffer.size() > 1:
-		while players_states_buffer.size() > 2 and render_time > players_states_buffer[1].T:
+		while players_states_buffer.size() > 2 and render_time > players_states_buffer[2].T:
 			# pop states we've already fully interpolated from (remove old states)
 			players_states_buffer.remove(0)
-		# a float between 0-1 indicating how close we are to the newer state (percentage)
-		var interpolation_factor = float(render_time - players_states_buffer[0]['T']) / float(players_states_buffer[1]['T'] - players_states_buffer[0]['T'])
-		for pid in players_states_buffer[1]:
-			if str(pid) == 'T':
-				continue
-			if pid == Globals.player_id:
-				continue
-			# make sure exist in both states
-			if not players_states_buffer[0].has(pid):
-				continue
-			var player_node = get_player_node_by_id(pid)
-			# if not eliminated
-			if player_node:
-				var new_pos = lerp(players_states_buffer[0][pid]['P'], players_states_buffer[1][pid]['P'], interpolation_factor)
-				player_node.set_global_position(new_pos)
+		if players_states_buffer.size() > 2:
+			# i.e., if we have a future state
+			# a float between 0-1 indicating how close we are to the newer state (percentage)
+			var interpolation_factor = float(render_time - players_states_buffer[1]['T']) / float(players_states_buffer[2]['T'] - players_states_buffer[1]['T'])
+			for pid in players_states_buffer[2]:
+				if str(pid) == 'T':
+					continue
+				if pid == Globals.player_id:
+					continue
+				# make sure exist in both states
+				if not players_states_buffer[1].has(pid):
+					continue
+				var player_node = get_player_node_by_id(pid)
+				# if not eliminated
+				if player_node:
+					var new_pos = lerp(players_states_buffer[1][pid]['P'], players_states_buffer[2][pid]['P'], interpolation_factor)
+					player_node.set_global_position(new_pos)
+		elif render_time > players_states_buffer[1]['T']:
+			# condition is needed for the beginning of the collection
+			### Try: var extrapolation_factor = float(render_time - players_states_buffer[1]['T']) / float(players_states_buffer[1]['T'] - players_states_buffer[0]['T'])
+			var extrapolation_factor = float(render_time - players_states_buffer[0]['T']) / float(players_states_buffer[1]['T'] - players_states_buffer[0]['T']) - 1.00
+			for pid in players_states_buffer[1]:
+				if str(pid) == 'T':
+					continue
+				if pid == Globals.player_id:
+					continue
+				# make sure exist in both states
+				if not players_states_buffer[0].has(pid):
+					continue
+				var player_node = get_player_node_by_id(pid)
+				# if not eliminated
+				if player_node:
+					# delta between the past positions, for reference in extrapolation calculation
+					var position_delta = players_states_buffer[1][pid]['P'] - players_states_buffer[0][pid]['P']
+					var new_pos = players_states_buffer[1][pid]['P'] + (position_delta * extrapolation_factor)
+					player_node.set_global_position(new_pos)
 
 
 func _on_player_disconnect(player_id):
@@ -207,7 +228,6 @@ func handle_players_collision(other_player_id):
 		emit_signal('player_caught', Globals.player_id, other_player_id)
 		eliminate_player(players_ids_to_nodes[other_player_id])
 	else:
-		print('some1 caught me!')
 		emit_signal('player_caught', other_player_id, Globals.player_id)
 		eliminate_player(client_player_node)
 
