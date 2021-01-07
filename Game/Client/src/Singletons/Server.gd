@@ -239,6 +239,7 @@ func multicast_player_caught(catcher_pid, runner_pid):
 
 remote func receive_player_caught(catcher_pid, runner_pid):
 	# caught by Game
+	yield(get_tree().create_timer(float(Globals.INTERPOLATION_OFFSET) / 1000.0), "timeout")
 	emit_signal('player_caught', catcher_pid, runner_pid)
 
 
