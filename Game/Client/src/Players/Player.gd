@@ -4,19 +4,15 @@ const MAX_SPEED = 550
 const X_SPEED = 14
 const Y_SPEED = 16
 const FRICTION = 1.1
-
 var motion = Vector2()
 signal collided_with_another_player(other_player_id)
-
 
 func _ready():
 	set_physics_process(false)
 
-
 func _physics_process(_delta):
 	_send_player_state()
 	_movement_loop()
-
 
 func _movement_loop():
 	if Input.is_action_pressed("ui_up"):
@@ -63,4 +59,7 @@ func _on_PlayersCollisionDetector_area_shape_entered(_area_id, area, _area_shape
 
 func _on_PlayersCollisionDetector_body_shape_entered(_body_id, _body, _body_shape, _area_shape):
 	Audio.play_sfx('hit_wall')
-	
+
+
+func eliminate_self():
+	$HandleElimination.eliminate_player()

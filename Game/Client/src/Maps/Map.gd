@@ -238,8 +238,11 @@ func is_own_player_catcher():
 
 
 func eliminate_player(eliminated_player_node):
-	Audio.play_sfx('catch')
+	# Audio.play_sfx('catch')
 	if eliminated_player_node:
 		var pid = int(eliminated_player_node.name)
 		players_ids_to_nodes.erase(pid)
-		eliminated_player_node.queue_free()
+		eliminated_player_node.eliminate_self()
+
+
+

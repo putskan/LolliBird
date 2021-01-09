@@ -1,12 +1,12 @@
 extends Node
 
 # general vars
-
 const ROOM_ID_LENGTH = 4
 const TEAM_1_NOTATION = 'Team1'
 const TEAM_2_NOTATION = 'Team2'
 const UNASSIGNED_TEAM_NOTATION = 'Unassigned'
 const TEAMS_MAX_PLAYERS = {'Team1': 8, 'Team2': 8, 'Unassigned': 16}
+const MAP_COLLISION_BIT = 0
 const CATCHERS_COLLISION_BIT = 1
 const RUNNERS_COLLISION_BIT = 2
 const END_OF_MAP_COLLISION_BIT = 3

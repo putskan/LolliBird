@@ -65,7 +65,7 @@ ui_down={
 
 [layer_names]
 
-2d_physics/layer_1="static objects"
+2d_physics/layer_1="map"
 2d_physics/layer_2="catchers"
 2d_physics/layer_3="runners"
 2d_physics/layer_4="end of map"
