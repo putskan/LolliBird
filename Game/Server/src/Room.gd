@@ -7,6 +7,7 @@ var host_name
 var room_id
 # format: {player_id: {'T': timestamp, 'P': position}, player_id: {...}}
 var player_state_collection = {}
+var creation_unixtime
 
 """
 teams_players = {
@@ -24,6 +25,7 @@ var has_game_started = false
 func _ready():
 	# change to true when game starts
 	set_physics_process(false)
+	creation_unixtime = OS.get_unix_time()
 
 
 func _physics_process(_delta):
@@ -120,6 +122,8 @@ func get_name_by_id(player_id):
 
 func close_room():
 	Globals.running_rooms_ids.erase(room_id)
+	for pid in player_ids:
+		Server.disconnect_peer(pid)
 	queue_free()
 
 

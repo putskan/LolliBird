@@ -1,6 +1,5 @@
 extends Node
 
-
 func _generate_room_id():
 	# generate unused 4 digit number and add to the currently running rooms
 	while true:
@@ -43,3 +42,21 @@ func get_room_node(room_id):
 	get_tree().get_root().print_tree()
 	return Globals.running_rooms_node.get_node(str(room_id))
 
+
+func create_garbage_collection_timer():
+	# timer countdown every Globals.GARBAGE_COLLECTION_INTERVAL seconds
+	var timer = Timer.new()
+	timer.set_wait_time(Globals.GARBAGE_COLLECTION_INTERVAL)
+	timer.connect("timeout",self,"_garbage_collect") 
+	add_child(timer)
+	timer.start()
+
+
+func _garbage_collect():
+	# close rooms open for more than Globals.GARBAGE_COLLECTION_INTERVAL seconds
+	for room_node in Globals.running_rooms_node.get_children():
+		if room_node.creation_unixtime < OS.get_unix_time() - Globals.GARBAGE_COLLECTION_INTERVAL:
+			room_node.close_room()
+		else:
+			# rooms are ordered by time, stop if encountered a relatively new room
+			return

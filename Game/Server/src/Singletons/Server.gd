@@ -7,6 +7,7 @@ onready var root_node = get_tree().get_root()
 
 func _ready():
 	start_server()
+	HelperFunctions.create_garbage_collection_timer()
 
 
 func _process(_delta):
@@ -37,6 +38,9 @@ func _peer_disconnected(player_id):
 			return
 
 
+func disconnect_peer(pid):
+	network.disconnect_peer(pid)
+	
 remote func fetch_server_time(client_time):
 	rpc_id(get_tree().get_rpc_sender_id(), 'return_server_time', OS.get_system_time_msecs(), client_time)
 

@@ -4,6 +4,8 @@ const TEAM_1_NOTATION = 'Team1'
 const TEAM_2_NOTATION = 'Team2'
 const UNASSIGNED_TEAM_NOTATION = 'Unassigned'
 const ROOM_MAX_PLAYERS = 32
+# 6 hours
+const GARBAGE_COLLECTION_INTERVAL = 21600
 
 var room_resource = preload('res://src/Room.tscn') 
 var running_rooms_ids = []

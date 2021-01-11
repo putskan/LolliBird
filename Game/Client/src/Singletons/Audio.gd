@@ -4,7 +4,6 @@ onready var bg_menu_music = get_node('BgMenuMusic')
 onready var bg_menu_tween = bg_menu_music.get_node('BgMenuTween')
 onready var bg_game_music = get_node('BgGameMusic')
 onready var bg_game_tween = bg_game_music.get_node('BgGameTween')
-
 onready var catch_sfx = get_node('PlayerEliminationSFX')
 onready var hit_wall_sfx = get_node('HitWall')
 
