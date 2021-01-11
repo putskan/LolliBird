@@ -2,7 +2,7 @@ extends MarginContainer
 
 var scoreboard_player_label_name_pattern = 'ScoreboardLabel-%d'
 var game_state = 'idle'
-onready var start_round_button_node = find_node('StartRoundButton', true, false)
+onready var start_game_button_node = find_node('StartGameButton', true, false)
 onready var map_node = find_node('Map', true, false)
 onready var ui_round_number_node = get_node("VBoxContainer/UIPane/Control/RoundNumber")
 onready var ui_scoreboard_nodes = {
@@ -20,17 +20,17 @@ func _ready():
 		# make sure map scene has loaded and connected to game signals
 		yield(get_tree(),"idle_frame")
 		yield(get_tree(),"idle_frame")
-		_on_round_start()
+		round_start()
 		
 	if Globals.is_host:
-		start_round_button_node.disabled = false
+		start_game_button_node.disabled = false
 		
 	else:
-		start_round_button_node.disabled = true
+		start_game_button_node.disabled = true
 		
 	Server.connect('player_disconnect', self, '_on_player_disconnect')
 	Server.connect('assign_as_room_host', self, '_on_assign_as_room_host')
-	Server.connect('round_start', self, '_on_round_start')
+	Server.connect('round_start', self, 'round_start')
 	Server.connect('round_finish', self, '_on_round_finish')
 	Server.connect('game_finish', self, '_on_game_finish')
 	Server.connect('player_caught', self, '_on_player_caught_remotely')
@@ -51,15 +51,15 @@ func _on_player_disconnect(player_id):
 
 func _on_assign_as_room_host():
 	if game_state == 'idle':
-		start_round_button_node.disabled = false
+		start_game_button_node.disabled = false
 		
 
-func _on_StartRoundButton_pressed():
-	start_round_button_node.disabled = true
+func _on_StartGameButton_pressed():
+	start_game_button_node.disabled = true
 	Server.request_round_start()
 
 
-func _on_round_start():
+func round_start():
 	game_state = 'active'
 	emit_signal('game_round_start')
 
@@ -73,10 +73,8 @@ func _on_round_finish():
 		Globals.round_number += 1
 		ui_update_round_number()
 	
-	if Globals.is_host:
-		start_round_button_node.disabled = false
-	
 	emit_signal('game_round_finish')
+	round_start()
 
 
 func change_catchers_team():
@@ -181,7 +179,7 @@ func ui_update_round_number():
 
 
 func _on_game_finish(winning_team):
-	start_round_button_node.disabled = true
+	start_game_button_node.disabled = true
 	Globals.team_won = winning_team
 	SceneHandler.handle_scene_change('GameOver')
 

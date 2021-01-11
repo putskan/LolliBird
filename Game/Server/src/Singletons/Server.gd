@@ -141,7 +141,7 @@ func multicast_players_states(room_id, players_states):
 		rpc_unreliable_id(pid, 'receive_all_players_states', players_states)
 
 
-remote func round_start(room_id):
+remote func start_first_round(room_id):
 	var room_node = HelperFunctions.get_room_node(room_id)
 	room_node.round_start()
 	var pids = room_node.get_player_ids()

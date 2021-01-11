@@ -165,6 +165,9 @@ func round_finish():
 	var check_finish_data = check_game_finish()
 	if check_finish_data[0]:
 		game_finish(check_finish_data[1])
+		
+	else:
+		round_start()
 
 
 func check_game_finish():

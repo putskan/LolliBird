@@ -225,7 +225,7 @@ remote func receive_all_players_states(s_players_states):
 
 
 func request_round_start():
-	rpc_id(1, 'round_start', Globals.room_id)
+	rpc_id(1, 'start_first_round', Globals.room_id)
 
 
 remote func round_start():

@@ -25,27 +25,24 @@ func play_music(game_state):
 	bg_game_tween.stop_all()
 	match game_state:
 		'menu':
-			if bg_menu_music.is_playing():
-				return
-			# fade-out
-			bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -55, 3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			bg_game_tween.start()
-			# fade-in
-			bg_menu_music._set_playing(true)
-			bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
-			bg_menu_tween.start()
+			if not bg_menu_music.is_playing():
+				# fade-out
+				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -55, 3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				bg_game_tween.start()
+				# fade-in
+				bg_menu_music._set_playing(true)
+				bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
+				bg_menu_tween.start()
 	
 		'game':
-			if bg_game_music.is_playing():
-				return
-			# fade-out
-			bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -55, 3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			bg_menu_tween.start()
-			# fade-in
-			bg_game_music._set_playing(true)
-			bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
-			bg_game_tween.start()
-
+			if not bg_game_music.is_playing():
+				# fade-out
+				bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -55, 3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				bg_menu_tween.start()
+				# fade-in
+				bg_game_music._set_playing(true)
+				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
+				bg_game_tween.start()
 
 
 func _on_BgMenuTween_tween_completed(_object, _key):

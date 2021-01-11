@@ -62,7 +62,6 @@ margin_left = 121.0
 margin_top = 37.0
 margin_right = 271.0
 margin_bottom = 64.0
-size_flags_horizontal = 4
 text = "Main Menu"
 
 [node name="MenuBg" parent="." instance=ExtResource( 4 )]

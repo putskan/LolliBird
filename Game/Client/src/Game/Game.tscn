@@ -106,14 +106,14 @@ margin_right = 125.0
 margin_bottom = 27.0
 script = ExtResource( 7 )
 
-[node name="StartRoundButton" type="Button" parent="VBoxContainer/UIPane/Control2"]
+[node name="StartGameButton" type="Button" parent="VBoxContainer/UIPane/Control2"]
 margin_top = 37.0
 margin_right = 125.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 125, 27 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
-text = "Start Round"
+text = "Start Game"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -125,4 +125,4 @@ margin_top = 104.0
 margin_right = 1024.0
 margin_bottom = 594.0
 rect_min_size = Vector2( 1024, 490 )
-[connection signal="pressed" from="VBoxContainer/UIPane/Control2/StartRoundButton" to="." method="_on_StartRoundButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/UIPane/Control2/StartGameButton" to="." method="_on_StartGameButton_pressed"]
