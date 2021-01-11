@@ -39,5 +39,7 @@ func create_player(player_id, player_name, player_team, room_id):
 
 
 func get_room_node(room_id):
+	print(Globals.running_rooms_ids)
+	get_tree().get_root().print_tree()
 	return Globals.running_rooms_node.get_node(str(room_id))
 

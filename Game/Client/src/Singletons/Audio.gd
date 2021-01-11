@@ -8,12 +8,16 @@ onready var bg_game_tween = bg_game_music.get_node('BgGameTween')
 onready var catch_sfx = get_node('PlayerEliminationSFX')
 onready var hit_wall_sfx = get_node('HitWall')
 
+
 func play_sfx(event):
+	pass
+	"""
 	if event == 'catch':
 		catch_sfx._set_playing(true)
 		
 	elif event == 'hit_wall':
 		hit_wall_sfx._set_playing(true)
+	"""
 
 
 func play_music(game_state):
@@ -53,14 +57,4 @@ func _on_BgMenuTween_tween_completed(_object, _key):
 func _on_BgGameTween_tween_completed(_object, _key):
 	if bg_game_music.volume_db == -55:
 		bg_game_music._set_playing(false)
-
-
-
-# make sure stop inits the audio
-### ADD AS SINGLETON
-### ANSWER TO GDC
-
-
-
-
 

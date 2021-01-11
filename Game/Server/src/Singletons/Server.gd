@@ -22,7 +22,7 @@ func start_server():
 	network.connect("peer_disconnected", self, "_peer_disconnected")
 
 
-func _peer_connected(player_id):
+func _peer_connected(_player_id):
 	pass
 
 
@@ -63,15 +63,16 @@ remote func is_room_join_valid(room_id):
 	# check if there's an open room with "room_id" & not full
 	# response with null if all good, error message otherwise
 	var error_msg = null
-	var room_node = HelperFunctions.get_room_node(room_id)
 	if not room_id in Globals.running_rooms_ids:
 		error_msg = 'Error: Wrong PIN Entered'
 	
-	elif room_node.player_ids.size() >= Globals.ROOM_MAX_PLAYERS:
-		error_msg = 'Error: Room is full'
+	else:
+		var room_node = HelperFunctions.get_room_node(room_id)
+		if room_node.player_ids.size() >= Globals.ROOM_MAX_PLAYERS:
+			error_msg = 'Error: Room is full'
 		
-	elif room_node.has_game_started:
-		error_msg = 'Error: Game already started'
+		elif room_node.has_game_started:
+			error_msg = 'Error: Game already started'
 		
 	rpc_id(get_tree().get_rpc_sender_id(), 'response_room_id_join_validation', error_msg)
 
