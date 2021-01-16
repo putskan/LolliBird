@@ -40,7 +40,7 @@ func play_music(game_state):
 				bg_menu_tween.start()
 				# fade-in
 				bg_game_music._set_playing(true)
-				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -32, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
+				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -28, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
 				bg_game_tween.start()
 
 
