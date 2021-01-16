@@ -12,8 +12,8 @@ func _on_Create_pressed():
 		handle_error('Please Enter A Valid Name')
 		return
 
-	if player_name.length() >= 8:
-		handle_error('Name Too Long')
+	if player_name.length() > Globals.MAX_NAME_LENGTH:
+		handle_error('Name Too Long (Max: %s Characters)' % Globals.MAX_NAME_LENGTH)
 		return
 		
 	if not is_string_english(player_name):

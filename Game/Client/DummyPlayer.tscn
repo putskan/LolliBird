@@ -5,4 +5,4 @@
 [node name="DummyPlayer" instance=ExtResource( 1 )]
 
 [node name="AnimatedSprite" parent="." index="0"]
-frame = 3
+frame = 2
