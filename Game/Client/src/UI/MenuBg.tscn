@@ -46,7 +46,7 @@ modulate = Color( 1, 1, 1, 0.901961 )
 position = Vector2( 118.799, 117.528 )
 scale = Vector2( 0.161646, 0.166748 )
 frames = SubResource( 1 )
-frame = 2
+frame = 3
 playing = true
 
 [node name="frame-2" type="AnimatedSprite" parent="."]
@@ -54,4 +54,5 @@ modulate = Color( 1, 1, 1, 0.901961 )
 position = Vector2( 803.009, 304.616 )
 scale = Vector2( -0.122124, 0.134922 )
 frames = SubResource( 2 )
+frame = 1
 playing = true

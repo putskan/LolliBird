@@ -8,7 +8,7 @@ onready var catch_sfx = get_node('PlayerEliminationSFX')
 onready var hit_wall_sfx = get_node('HitWall')
 
 
-func play_sfx(event):
+func play_sfx(_event):
 	pass
 	"""
 	if event == 'catch':
@@ -20,7 +20,6 @@ func play_sfx(event):
 
 
 func play_music(game_state):
-
 	bg_menu_tween.stop_all()
 	bg_game_tween.stop_all()
 	match game_state:
@@ -31,7 +30,7 @@ func play_music(game_state):
 				bg_game_tween.start()
 				# fade-in
 				bg_menu_music._set_playing(true)
-				bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
+				bg_menu_tween.interpolate_property(bg_menu_music, 'volume_db', bg_menu_music.volume_db, -28, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
 				bg_menu_tween.start()
 	
 		'game':
@@ -41,7 +40,7 @@ func play_music(game_state):
 				bg_menu_tween.start()
 				# fade-in
 				bg_game_music._set_playing(true)
-				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -13, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
+				bg_game_tween.interpolate_property(bg_game_music, 'volume_db', bg_game_music.volume_db, -32, 3, Tween.TRANS_QUART, Tween.EASE_OUT, 0.5)
 				bg_game_tween.start()
 
 

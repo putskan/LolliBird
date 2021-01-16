@@ -5,10 +5,14 @@ var current_scene
 var drag_position = null
 var teams_parent
 var teams_rect_nodes
-onready var player_name = get_node("VBoxContainer/PlayerName").text
+onready var player_name_label = get_node("VBoxContainer/PlayerName")
+onready var player_name = player_name_label.text
 onready var current_team_name = get_parent().get_parent().name
 
 func _ready():
+	if player_id == Globals.player_id:
+		player_name_label.add_color_override("font_color_shadow", Color(0, 0.43, 0.33, 1))
+		
 	yield(get_tree(),"idle_frame")
 	current_scene = get_tree().get_current_scene()
 	teams_parent = get_tree().get_current_scene().get_node('VBoxContainer/Teams')
@@ -18,6 +22,8 @@ func _ready():
 
 
 func drag_lobby_bird(event):
+	if player_id != Globals.player_id:
+		return
 	if event is InputEventMouseButton:
 		if event.pressed:
 			# the point in the window where we clicked 

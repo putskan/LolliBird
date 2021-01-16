@@ -15,9 +15,9 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 8 ) ],
 "loop": true,
-"name": "Unassigned",
+"name": "Team1",
 "speed": 11.0
 }, {
 "frames": [ ExtResource( 11 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 6 ) ],
@@ -25,9 +25,9 @@ animations = [ {
 "name": "Team2",
 "speed": 11.0
 }, {
-"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 8 ) ],
+"frames": [ ExtResource( 5 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": true,
-"name": "Team1",
+"name": "Unassigned",
 "speed": 11.0
 } ]
 
@@ -42,6 +42,7 @@ collision_layer = 0
 scale = Vector2( 0.0296434, 0.0282415 )
 frames = SubResource( 1 )
 animation = "Unassigned"
+frame = 1
 playing = true
 centered = false
 
