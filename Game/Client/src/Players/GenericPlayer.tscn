@@ -42,7 +42,7 @@ collision_layer = 0
 scale = Vector2( 0.0296434, 0.0282415 )
 frames = SubResource( 1 )
 animation = "Unassigned"
-frame = 1
+frame = 2
 playing = true
 centered = false
 

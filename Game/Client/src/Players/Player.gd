@@ -1,8 +1,8 @@
 extends KinematicBody2D
 
-const MAX_SPEED = 550
-const X_SPEED = 14
-const Y_SPEED = 16
+const MAX_SPEED = 400
+const X_SPEED = 11
+const Y_SPEED = 11
 const FRICTION = 1.1
 var motion = Vector2()
 signal collided_with_another_player(other_player_id)

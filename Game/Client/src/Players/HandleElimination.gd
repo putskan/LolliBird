@@ -14,7 +14,7 @@ func _ready():
 func _physics_process(delta):
 	motion.y += 3
 	player.move_and_slide(motion)
-	var rot_speed = rad2deg(10)
+	var rot_speed = rad2deg(0.2)
 	player_sprite.set_rotation(player_sprite.get_rotation() + rot_speed * delta)
 	if motion.y > 1000:
 		player.queue_free()
@@ -22,6 +22,7 @@ func _physics_process(delta):
 
 func eliminate_player():
 	player.set_physics_process(false)
+	player.modulate.a = 0.5
 	_remove_collision()
 	_start_elimination_process()
 

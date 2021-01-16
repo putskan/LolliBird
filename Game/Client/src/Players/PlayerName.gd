@@ -13,5 +13,5 @@ func _physics_process(_delta):
 func fade_out_process():
 	opacity -= 0.015
 	set_modulate(Color(1, 1, 1, opacity))
-	if opacity == 0:
+	if opacity <= 0:
 		queue_free()
