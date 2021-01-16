@@ -1,11 +1,11 @@
 extends Node
 
-# const IP_ADDRESS = "127.0.0.1"
-# const PORT = 11111
-# var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
-const IP_ADDRESS = 'lollibird.herokuapp.com'
-const PORT = 443
-var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
+const IP_ADDRESS = "127.0.0.1"
+const PORT = 11111
+var server_url = 'ws://%s:%d' % [IP_ADDRESS, PORT]
+# const IP_ADDRESS = 'lollibird.herokuapp.com'
+# const PORT = 443
+# var server_url = 'wss://%s:%d/ws/' % [IP_ADDRESS, PORT]
 var network = WebSocketClient.new()
 # clock sync varibales
 var latency = 0
@@ -30,6 +30,8 @@ signal receive_response_start_game(error_msg)
 
 
 func _ready():
+	network.connect("connection_failed", self, "_on_connection_failed")
+	network.connect("connection_succeeded", self, "_on_connection_succeeded")
 	connect_to_server()
 	set_physics_process(false)
 	self.connect('return_from_tab_switch', self, 'fetch_server_time')
@@ -58,12 +60,12 @@ func _physics_process(delta):
 func connect_to_server():
 	network.connect_to_url(server_url, PoolStringArray(), true);
 	get_tree().set_network_peer(network)
-	network.connect("connection_failed", self, "_on_connection_failed")
-	network.connect("connection_succeeded", self, "_on_connection_succeeded")
 
 
 func _on_connection_failed():
-	pass
+	# try connecting again
+	yield(get_tree().create_timer(0.5), "timeout")
+	connect_to_server()
 
 
 func _on_connection_succeeded():
