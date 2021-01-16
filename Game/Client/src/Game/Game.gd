@@ -5,6 +5,7 @@ var game_state = 'idle'
 onready var start_game_button_node = find_node('StartGameButton', true, false)
 onready var map_node = find_node('Map', true, false)
 onready var ui_round_number_node = get_node("VBoxContainer/UIPane/Control/RoundNumber")
+onready var ui_round_catcher_node = get_node("VBoxContainer/UIPane/Control/RoundCatcher")
 onready var ui_scoreboard_nodes = {
 									'Team1': get_node("VBoxContainer/UIPane/Team1/Scoreboard"),
 									'Team2': get_node("VBoxContainer/UIPane/Team2/Scoreboard")
@@ -85,7 +86,11 @@ func change_catchers_team():
 
 
 func ui_update_catchers_team():
-	get_node("VBoxContainer/UIPane/Control/RoundCatcher").text = 'Catcher: %s' % Globals.catchers_team
+	ui_round_catcher_node.text = 'Catcher: %s' % Globals.catchers_team
+	if Globals.catchers_team == 'Team1':
+		ui_round_catcher_node.add_color_override("font_color", Color(1, 0, 0.77, 1))
+	else:
+		ui_round_catcher_node.add_color_override("font_color", Color(0, 0, 1, 1))
 
 
 func _on_player_caught_locally(catcher_pid, runner_pid):
