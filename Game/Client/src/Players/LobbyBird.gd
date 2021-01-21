@@ -24,7 +24,7 @@ func _ready():
 func drag_lobby_bird(event):
 	if player_id != Globals.player_id:
 		return
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		if event.pressed:
 			# the point in the window where we clicked 
 			# (so the top left corner of the object won't move to the mouse pos)
